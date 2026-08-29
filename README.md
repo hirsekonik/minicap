@@ -10,20 +10,28 @@ The repository is structured into the following directories:
     *   `TPC Student Handbook.pdf`
     *   `Capstone-Dalandan Mini.docx`
 *   **`/src`**: Contains the Python source code for the data pipeline and RAG integration.
-    *   `checkpoint1_pipeline.py`: Script to parse, clean, chunk, and embed the documents.
-    *   `checkpoint2_rag.py`: Script to store embeddings in ChromaDB and query OpenAI's LLM using the retrieved context.
-*   **`/docs`**: Directory for project documentation.
+    *   `pipeline.py`: Script to parse, clean, chunk, and generate dense vector embeddings for documents.
+    *   `rag.py`: Script to store embeddings in ChromaDB and query the LLM (Gemini) using retrieved context and prompt engineering.
+*   **`/notebooks`**: Contains the interactive exploratory and preprocessing notebook.
+    *   `01_text_preprocessing.ipynb`: Interactive Jupyter Notebook with cleaning, normalization, and tokenization demonstrations.
+*   **`/docs`**: Directory for project documentation and design portfolios.
 
 ## Dependency Installation
 
-To run this project, you must install the following Python packages:
+To run this project, ensure the virtual environment dependencies are installed:
 
 ```bash
-pip install sentence-transformers chromadb openai tiktoken PyPDF2 python-docx beautifulsoup4
+pip install sentence-transformers chromadb google-genai tiktoken PyPDF2 python-docx python-dotenv
 ```
 
 ## Running the Application
 
-1. **Process Data**: Run `checkpoint1_pipeline.py` to test the parsing, cleaning, and embedding steps.
-2. **Run RAG Query**: Run `checkpoint2_rag.py` to index the documents into a local ChromaDB instance and test querying the system.
-   *   *Note*: Ensure that the `OPENAI_API_KEY` environment variable is set with your OpenAI API key before running the RAG integration.
+1. **Process Data & Embeddings**: Run `pipeline.py` to test document ingestion, cleaning, chunking, and embedding generation:
+   ```bash
+   python src/pipeline.py
+   ```
+2. **Run RAG Query**: Run `rag.py` to index documents into the persistent local ChromaDB instance and test hallucination-prevention prompt queries:
+   ```bash
+   python src/rag.py
+   ```
+   * *Note*: Ensure that `GEMINI_API_KEY` is configured in your `.env` file.
