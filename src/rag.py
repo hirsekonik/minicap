@@ -122,11 +122,17 @@ def setup_chromadb(chunks=None):
 
 
 def get_gemini_api_key():
-    """Retrieves the Gemini API key supporting common variable name variations."""
+    """Retrieves the Gemini API key supporting any variable name or casing variation."""
     for key_name in ["GEMINI_API_KEY", "API_KEY", "API KEY", "APIKey", "GOOGLE_API_KEY", "api_key", "apikey", "Api_Key"]:
         val = os.environ.get(key_name)
         if val and val.strip():
             return val.strip()
+
+    for k, v in os.environ.items():
+        clean_k = k.replace("_", "").replace(" ", "").replace("-", "").lower()
+        if clean_k in ["apikey", "geminiapikey", "googleapikey", "geminikey", "googlekey"]:
+            if v and v.strip():
+                return v.strip()
     return None
 
 
