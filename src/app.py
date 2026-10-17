@@ -584,7 +584,12 @@ def serve_index():
             <div class="glass-card">
                 <div class="section-heading">Evaluator Suggested Queries</div>
                 <div class="suggestion-group" id="suggestions-list">
-                    <!-- Dynamic suggestions populated via JS -->
+                    <div class="suggestion-chip" onclick="applySuggestion('What are the signatory offices involved in the student clearance process?')">
+                        <strong>&#10003; In-Scope Query:</strong><br>"What are the signatory offices involved in the student clearance process?"
+                    </div>
+                    <div class="suggestion-chip test-hallucination" onclick="applySuggestion('Can TPC students apply for a tuition discount through the Foreign Aviation Flight School program?')">
+                        <strong>&#9888; Hallucination Test:</strong><br>"Can TPC students apply for a tuition discount through the Foreign Aviation Flight School program?"
+                    </div>
                 </div>
             </div>
         </div>
@@ -635,33 +640,44 @@ def serve_index():
             ]
         };
 
+        function applySuggestion(text) {
+            const input = document.getElementById('user-query-input');
+            if (input) {
+                input.value = text;
+                input.focus();
+            }
+        }
+
         function selectMode(id) {
             currentPromptId = id;
             [1, 2, 3].forEach(i => {
                 const btn = document.getElementById(`btn-mode-${i}`);
-                if (i === id) btn.classList.add('active');
-                else btn.classList.remove('active');
+                if (btn) {
+                    if (i === id) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
             });
             renderSuggestions();
         }
 
         function renderSuggestions() {
             const container = document.getElementById('suggestions-list');
+            if (!container) return;
             container.innerHTML = '';
             const items = suggestionsMap[currentPromptId] || [];
             items.forEach((item, idx) => {
                 const div = document.createElement('div');
                 div.className = `suggestion-chip ${item.type === 'hallucination' ? 'test-hallucination' : ''}`;
                 const label = item.type === 'hallucination' ? '⚠️ Hallucination Test' : '✓ In-Scope Query';
-                div.innerHTML = `<strong>${label}:</strong><br>"${item.text}"`;
-                div.onclick = () => {
-                    document.getElementById('user-query-input').value = item.text;
-                    document.getElementById('user-query-input').focus();
-                };
+                div.innerHTML = `<strong>${label}:</strong><br>"${escapeHtml(item.text)}"`;
+                div.onclick = () => applySuggestion(item.text);
                 container.appendChild(div);
             });
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSuggestions();
+        });
         renderSuggestions();
 
         async function handleSend(e) {
