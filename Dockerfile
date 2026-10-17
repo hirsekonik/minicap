@@ -31,6 +31,7 @@ COPY . .
 # Pre-index knowledge base into persistent ChromaDB
 RUN python -c "from src.pipeline import read_pdf, clean_text, chunk_text; from src.rag import setup_chromadb; raw = read_pdf('data/Master_Capstone_Dataset.pdf'); chunks = chunk_text(clean_text(raw)); setup_chromadb(chunks)"
 
+EXPOSE 8080
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn src.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["python", "src/entrypoint.py"]
