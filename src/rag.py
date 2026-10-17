@@ -121,10 +121,19 @@ def setup_chromadb(chunks=None):
     return collection, chroma_client
 
 
+def get_gemini_api_key():
+    """Retrieves the Gemini API key supporting common variable name variations."""
+    for key_name in ["GEMINI_API_KEY", "API_KEY", "API KEY", "APIKey", "GOOGLE_API_KEY", "api_key", "apikey", "Api_Key"]:
+        val = os.environ.get(key_name)
+        if val and val.strip():
+            return val.strip()
+    return None
+
+
 def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = None):
     """Executes semantic search against ChromaDB and generates grounded response via Gemini LLM."""
     if not api_key:
-        api_key = os.environ.get("GEMINI_API_KEY")
+        api_key = get_gemini_api_key()
 
     # 1. Similarity Search
     query_embedding = embedding_model.encode(query).tolist()
@@ -138,7 +147,7 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
 
     if not api_key:
         return {
-            "answer": "GEMINI_API_KEY is not configured. Please add GEMINI_API_KEY to your environment variables on Railway.",
+            "answer": "Gemini API key is not configured. Please add GEMINI_API_KEY or API_KEY to your environment variables on Railway.",
             "retrieved_chunks": retrieved_docs,
             "model_used": "none",
             "error": "missing_api_key"

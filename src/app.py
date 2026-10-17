@@ -8,10 +8,10 @@ from pydantic import BaseModel
 
 # Safe imports for internal modules
 try:
-    from src.rag import setup_chromadb, query_rag_engine, PROMPTS
+    from src.rag import setup_chromadb, query_rag_engine, PROMPTS, get_gemini_api_key
     from src.pipeline import read_pdf, clean_text, chunk_text
 except ImportError:
-    from rag import setup_chromadb, query_rag_engine, PROMPTS
+    from rag import setup_chromadb, query_rag_engine, PROMPTS, get_gemini_api_key
     from pipeline import read_pdf, clean_text, chunk_text
 
 app = FastAPI(
@@ -73,7 +73,7 @@ def health_check():
         "status": "healthy",
         "service": "TPC Automated Clearance Assistant (MiniCAP)",
         "indexed_chunks": col.count() if col else 0,
-        "gemini_api_configured": bool(os.environ.get("GEMINI_API_KEY"))
+        "gemini_api_configured": bool(get_gemini_api_key())
     }
 
 @app.get("/api/prompts")
@@ -96,7 +96,7 @@ def query_rag(request: QueryRequest):
         collection=col,
         query=request.query,
         system_prompt=system_prompt,
-        api_key=os.environ.get("GEMINI_API_KEY")
+        api_key=get_gemini_api_key()
     )
     
     return QueryResponse(
