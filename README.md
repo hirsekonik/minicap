@@ -26,11 +26,31 @@ pip install sentence-transformers chromadb google-genai tiktoken PyPDF2 python-d
 
 ## Running the Application
 
+### Option A: Via Docker (Recommended for Deployment / Railway)
+The repository includes a production-ready `Dockerfile` optimized with CPU PyTorch, pre-cached embeddings, and persistent vector store.
+
+1. **Build Docker Image**:
+   ```bash
+   docker build -t minicap-rag .
+   ```
+2. **Run Container**:
+   ```bash
+   docker run -p 8000:8000 -e GEMINI_API_KEY="your-gemini-api-key" minicap-rag
+   ```
+3. Open your browser to `http://localhost:8000` to interact with the web interface, or visit `http://localhost:8000/docs` for the interactive OpenAPI/Swagger documentation.
+
+### Option B: Deploying to Railway
+1. Connect this repository to your Railway project. Railway will automatically detect the `Dockerfile` at the root.
+2. In Railway project settings, go to **Variables** and add:
+   - `GEMINI_API_KEY`: Your Google Gemini API key.
+3. Railway will build the Docker container and deploy the service. Access your public Railway domain to chat with the assistant or connect your ERP system via `POST /api/query`.
+
+### Option C: Local Python Terminal Mode
 1. **Process Data & Embeddings**: Run `pipeline.py` to test document ingestion, cleaning, chunking, and embedding generation:
    ```bash
    python src/pipeline.py
    ```
-2. **Run RAG Query**: Run `rag.py` to index documents into the persistent local ChromaDB instance and test hallucination-prevention prompt queries:
+2. **Run Interactive RAG CLI**: Run `rag.py` to index documents into the persistent local ChromaDB instance and test hallucination-prevention prompt queries:
    ```bash
    python src/rag.py
    ```

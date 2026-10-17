@@ -18,8 +18,10 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-# Import pipeline components cleanly from pipeline.py
-from pipeline import read_pdf, clean_text, chunk_text, SentenceTransformer
+try:
+    from src.pipeline import read_pdf, clean_text, chunk_text, SentenceTransformer
+except ImportError:
+    from pipeline import read_pdf, clean_text, chunk_text, SentenceTransformer
 
 # Suppress background library warnings
 warnings.filterwarnings("ignore")
@@ -91,7 +93,7 @@ PROMPTS = {
 }
 
 
-def setup_chromadb(chunks):
+def setup_chromadb(chunks=None):
     """Initializes persistent ChromaDB and indexes chunks if not already present."""
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     db_path = os.path.join(base_dir, 'tpc_chroma_db')
@@ -99,7 +101,7 @@ def setup_chromadb(chunks):
     chroma_client = chromadb.PersistentClient(path=db_path)
     collection = chroma_client.get_or_create_collection(name="tpc_clearance")
     
-    if collection.count() == 0:
+    if collection.count() == 0 and chunks:
         print("[ChromaDB] Indexing chunks into vector database...", flush=True)
         embeddings = embedding_model.encode(chunks).tolist()
         
@@ -119,42 +121,36 @@ def setup_chromadb(chunks):
     return collection, chroma_client
 
 
-def perform_rag_query(collection, query: str, system_prompt: str, prompt_label: str = ""):
-    """Retrieves top-3 context chunks and queries Gemini LLM."""
-    print("\n" + "=" * 65, flush=True)
-    if prompt_label:
-        print(f"MODE : {prompt_label}", flush=True)
-    print(f"QUERY: {query}", flush=True)
-    print("=" * 65, flush=True)
-    
+def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = None):
+    """Executes semantic search against ChromaDB and generates grounded response via Gemini LLM."""
+    if not api_key:
+        api_key = os.environ.get("GEMINI_API_KEY")
+
     # 1. Similarity Search
-    print("[1/3] Searching ChromaDB vector database...", flush=True)
     query_embedding = embedding_model.encode(query).tolist()
-    
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=3
     )
-    
-    retrieved_context = "\n\n".join(results['documents'][0])
-    
-    print("\n--- Retrieved Context Preview ---", flush=True)
-    preview = retrieved_context[:250].strip()
-    print(f"{preview}...\n[Top 3 chunks retrieved]", flush=True)
-    
-    # 2. Check API Key
-    api_key = os.environ.get("GEMINI_API_KEY")
+
+    retrieved_docs = results['documents'][0] if results.get('documents') and len(results['documents']) > 0 else []
+    retrieved_context = "\n\n".join(retrieved_docs)
+
     if not api_key:
-        print("\n[Error] GEMINI_API_KEY is not set in your .env file.", flush=True)
-        return
-        
-    # 3. Call LLM
-    print("\n[2/3] Querying Gemini LLM with context grounding...", flush=True)
+        return {
+            "answer": "GEMINI_API_KEY is not configured. Please add GEMINI_API_KEY to your environment variables on Railway.",
+            "retrieved_chunks": retrieved_docs,
+            "model_used": "none",
+            "error": "missing_api_key"
+        }
+
+    # 2. Call Gemini LLM with context grounding
     user_prompt = f"Context:\n{retrieved_context}\n\nQuestion: {query}"
-    candidate_models = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash', 'gemini-3.6-flash']
-    
+    candidate_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-lite', 'gemini-3.5-flash']
+
     client = genai.Client(api_key=api_key)
-    
+    last_err = None
+
     for model_name in candidate_models:
         try:
             response = client.models.generate_content(
@@ -165,21 +161,49 @@ def perform_rag_query(collection, query: str, system_prompt: str, prompt_label: 
                     temperature=0.0
                 )
             )
-            print("\n" + "-" * 65, flush=True)
-            print(f"BOT RESPONSE ({model_name}):", flush=True)
-            print("-" * 65, flush=True)
-            print(response.text.strip(), flush=True)
-            print("-" * 65 + "\n", flush=True)
-            return
+            return {
+                "answer": response.text.strip(),
+                "retrieved_chunks": retrieved_docs,
+                "model_used": model_name,
+                "error": None
+            }
         except Exception as e:
-            err_str = str(e)
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str or "404" in err_str or "NOT_FOUND" in err_str:
+            last_err = str(e)
+            if "429" in last_err or "RESOURCE_EXHAUSTED" in last_err or "404" in last_err or "NOT_FOUND" in last_err:
                 continue
             else:
-                print(f"[Error] API Call Error ({model_name}): {e}", flush=True)
                 break
-                
-    print("[Error] Could not complete query due to API quota or rate limits.\n", flush=True)
+
+    return {
+        "answer": f"Unable to complete query due to API error: {last_err or 'quota limit reached'}",
+        "retrieved_chunks": retrieved_docs,
+        "model_used": "none",
+        "error": last_err
+    }
+
+
+def perform_rag_query(collection, query: str, system_prompt: str, prompt_label: str = ""):
+    """Retrieves top-3 context chunks and queries Gemini LLM for terminal display."""
+    print("\n" + "=" * 65, flush=True)
+    if prompt_label:
+        print(f"MODE : {prompt_label}", flush=True)
+    print(f"QUERY: {query}", flush=True)
+    print("=" * 65, flush=True)
+
+    result = query_rag_engine(collection, query, system_prompt)
+
+    print("\n--- Retrieved Context Preview ---", flush=True)
+    if result["retrieved_chunks"]:
+        preview = result["retrieved_chunks"][0][:250].strip()
+        print(f"{preview}...\n[Top {len(result['retrieved_chunks'])} chunks retrieved]", flush=True)
+    else:
+        print("No matching context chunks found.", flush=True)
+
+    print("\n" + "-" * 65, flush=True)
+    print(f"BOT RESPONSE ({result['model_used']}):", flush=True)
+    print("-" * 65, flush=True)
+    print(result["answer"], flush=True)
+    print("-" * 65 + "\n", flush=True)
 
 
 def ask_questions_for_prompt(collection, prompt_id: int, target_count: int = 2):
