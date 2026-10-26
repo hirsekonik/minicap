@@ -159,3 +159,13 @@ def query_rag(request: QueryRequest):
 def serve_index():
     static_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "index.html")
     return FileResponse(static_file, media_type="text/html; charset=utf-8")
+
+@app.get("/widget", response_class=FileResponse)
+def serve_widget():
+    static_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "widget.html")
+    return FileResponse(static_file, media_type="text/html; charset=utf-8")
+
+@app.get("/widget.js", response_class=FileResponse)
+def serve_widget_js():
+    static_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "widget.js")
+    return FileResponse(static_file, media_type="application/javascript")

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TPC Student Clearance Assistant | Talibon Polytechnic College</title>
-    <meta name="description" content="Official AI Assistant for Talibon Polytechnic College Student Clearance System. Real-time guidance on clearance workflows, signatory offices, and policies.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Talibon Polytechnic College - Student Clearance System & AI Assistant</title>
+    <meta name="description" content="Official Student Clearance System portal and floating AI assistant for Talibon Polytechnic College.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,39 +18,38 @@
             --tpc-cyan: #06b6d4;
             --tpc-purple: #8b5cf6;
             --tpc-green: #10b981;
+            --tpc-amber: #f59e0b;
+            --tpc-red: #ef4444;
             
             --bg-blueprint: #0d276b;
-            --border-blueprint: rgba(255, 255, 255, 0.12);
+            --border-blueprint: rgba(255, 255, 255, 0.14);
             
             --card-white: #ffffff;
             --text-dark: #0f172a;
             --text-slate: #334155;
             --text-muted: #64748b;
-            --text-light: #ffffff;
-            --text-light-muted: rgba(255, 255, 255, 0.75);
             
-            --shadow-card: 0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06);
-            --shadow-primary: 0 4px 14px rgba(37, 99, 235, 0.35);
+            --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.05);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         body {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             background-color: #0b1e52;
             color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
 
-        /* --- Global Blueprint Grid Background --- */
+        /* Blueprint grid pattern from TPC portal */
         .blueprint-bg {
             background-color: #0d276b;
             background-image: 
@@ -60,19 +59,85 @@
             background-position: -1px -1px;
         }
 
-        /* --- Header matching TPC Portal --- */
-        header {
-            background: rgba(11, 30, 82, 0.95);
+        /* Top Developer & Embed Utility Bar */
+        .utility-bar {
+            background: #061338;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.5rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            z-index: 1000;
+        }
+
+        .utility-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .utility-pill {
+            background: rgba(37, 99, 235, 0.25);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .utility-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .util-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            padding: 0.35rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .util-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .util-btn.active {
+            background: var(--tpc-blue-vibrant);
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
+
+        /* --- TPC Portal Header --- */
+        .portal-header {
+            background: rgba(11, 30, 82, 0.96);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-blueprint);
+            padding: 0.85rem 1.75rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 0.85rem 1.75rem;
         }
 
-        .header-content {
-            max-width: 1440px;
+        .header-container {
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -80,23 +145,19 @@
             gap: 1.5rem;
         }
 
-        .brand-badge {
+        .header-brand {
             display: flex;
             align-items: center;
             gap: 0.85rem;
             text-decoration: none;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.45rem 0.9rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .tpc-logo {
-            width: 38px;
-            height: 38px;
+        .tpc-crest-logo {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -104,574 +165,528 @@
             flex-shrink: 0;
         }
 
-        .tpc-logo svg {
-            width: 38px;
-            height: 38px;
+        .tpc-crest-logo svg {
+            width: 42px;
+            height: 42px;
         }
 
-        .brand-titles {
+        .brand-text {
             display: flex;
             flex-direction: column;
         }
 
-        .brand-sub {
+        .brand-college {
             font-size: 0.65rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.8);
+            color: #93c5fd;
         }
 
-        .brand-main {
-            font-size: 0.95rem;
-            font-weight: 700;
+        .brand-title {
+            font-size: 1.05rem;
+            font-weight: 800;
             color: #ffffff;
             letter-spacing: -0.01em;
         }
 
-        .header-center-pill {
-            display: inline-flex;
+        .header-nav {
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+        }
+
+        .student-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 0.35rem 0.85rem;
             border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #bfdbfe;
-        }
-
-        .header-center-pill .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: var(--tpc-cyan);
-            box-shadow: 0 0 8px var(--tpc-cyan);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-        }
-
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.85rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(16, 185, 129, 0.12);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.25);
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: var(--tpc-green);
-            box-shadow: 0 0 8px var(--tpc-green);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.9); }
-        }
-
-        .portal-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             font-size: 0.78rem;
-            font-weight: 600;
-            padding: 0.45rem 0.95rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.2s ease;
         }
 
-        .portal-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.35);
-        }
-
-        /* --- Main Layout --- */
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            max-width: 1440px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 1.5rem 1.75rem 2rem;
-            gap: 1.75rem;
-        }
-
-        @media (max-width: 980px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                display: none;
-            }
-        }
-
-        /* --- Left Sidebar (Help & Frequently Asked) --- */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            color: #ffffff;
-        }
-
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 18px;
-            padding: 1.25rem;
-            backdrop-filter: blur(12px);
-        }
-
-        .welcome-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 0.35rem;
-        }
-
-        .welcome-desc {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.75);
-            line-height: 1.5;
-        }
-
-        .new-chat-btn {
-            margin-top: 1rem;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            padding: 0.65rem 1rem;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
+        .student-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tpc-cyan) 0%, var(--tpc-blue-vibrant) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
+            font-weight: 800;
+            font-size: 0.72rem;
+            color: #ffffff;
         }
 
-        .new-chat-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.35);
-        }
-
-        .faq-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 18px;
-            padding: 1.25rem;
-            backdrop-filter: blur(10px);
+        /* --- Main System Dashboard --- */
+        .portal-main {
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.75rem 4rem;
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
+            gap: 1.75rem;
         }
 
-        .faq-heading {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #93c5fd;
-            margin-bottom: 0.25rem;
-        }
-
-        .faq-item {
-            background: rgba(11, 25, 68, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
-            padding: 0.7rem 0.85rem;
-            font-size: 0.78rem;
-            color: #e2e8f0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-            line-height: 1.35;
+        /* Clearance Overview Banner */
+        .status-hero {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.35) 0%, rgba(15, 46, 138, 0.45) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 20px;
+            padding: 1.75rem 2rem;
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .faq-item:hover {
-            background: rgba(30, 58, 138, 0.85);
-            border-color: #60a5fa;
-            color: #ffffff;
-            transform: translateX(3px);
-        }
-
-        .faq-item .faq-icon {
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.5);
-            display: flex;
             justify-content: space-between;
-        }
-
-        /* --- Right Floating White Card (Chat Interface) --- */
-        .chat-portal-wrapper {
-            background: #f1f5f9;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 22px 22px;
-            border-radius: 24px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-        }
-
-        .chat-card {
-            background: var(--card-white);
-            border-radius: 20px;
-            box-shadow: var(--shadow-card);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 150px);
-            min-height: 600px;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            color: #ffffff;
             position: relative;
             overflow: hidden;
         }
 
-        /* Signature Top Gradient Bar */
-        .card-top-gradient {
-            height: 5px;
-            width: 100%;
-            background: linear-gradient(90deg, var(--tpc-cyan) 0%, var(--tpc-blue-vibrant) 50%, var(--tpc-purple) 100%);
-            flex-shrink: 0;
+        .status-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle at right center, rgba(6, 182, 212, 0.18) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .chat-card-header {
-            padding: 1.1rem 1.5rem;
+        .hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 650px;
+        }
+
+        .term-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--tpc-cyan);
+        }
+
+        .hero-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .hero-desc {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        .hero-progress-box {
+            background: rgba(8, 26, 72, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            min-width: 280px;
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .progress-bar-track {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 62.5%; /* 5 of 8 cleared */
+            background: linear-gradient(90deg, var(--tpc-cyan) 0%, var(--tpc-green) 100%);
+            border-radius: 9999px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-footer {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Signatory Offices Table Card */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.75rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .white-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header-bar {
+            padding: 1.15rem 1.5rem;
             border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: space-between;
             background: #ffffff;
         }
 
-        .portal-icon-box {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        .card-heading {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.01em;
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-            color: #ffffff;
-            flex-shrink: 0;
+            gap: 0.5rem;
         }
 
-        .portal-header-info {
-            flex: 1;
+        .table-responsive {
+            overflow-x: auto;
         }
 
-        .portal-welcome {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            letter-spacing: -0.015em;
+        .clearance-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
         }
 
-        .portal-sub {
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            margin-top: 0.1rem;
+        .clearance-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .clear-btn {
-            background: transparent;
-            border: 1px solid #e2e8f0;
-            color: #64748b;
-            font-size: 0.74rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .clearance-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
         }
 
-        .clear-btn:hover {
-            background: #f1f5f9;
+        .clearance-table tr:hover td {
+            background: #fbfcfe;
+        }
+
+        .office-name {
+            font-weight: 700;
             color: #0f172a;
         }
 
-        /* Messages Area */
-        .chat-messages {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            background: #f8fafc;
+        .office-officer {
+            font-size: 0.75rem;
+            color: #64748b;
         }
 
-        .message-bubble {
-            max-width: 82%;
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
-            font-size: 0.92rem;
-            line-height: 1.6;
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            color: #ffffff;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            color: var(--text-slate);
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-        }
-
-        .bot-meta {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        .bot-meta .bot-tag {
-            font-weight: 700;
-            color: var(--tpc-blue-primary);
-        }
-
-        /* Starter Quick Chips in Welcome Message */
-        .starter-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.85rem;
-        }
-
-        .starter-chip {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: var(--tpc-blue-primary);
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 0.4rem 0.75rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .starter-chip:hover {
-            background: #dbeafe;
-            transform: translateY(-1px);
-        }
-
-        /* Grounded Context Sources Drawer */
-        .sources-toggle {
-            margin-top: 0.75rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: var(--tpc-blue-primary);
-            font-size: 0.72rem;
-            font-weight: 700;
-            cursor: pointer;
+        /* Status Pills */
+        .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
             padding: 0.3rem 0.65rem;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .sources-toggle:hover {
-            background: #e2e8f0;
-            color: #1e3a8a;
-        }
-
-        .sources-drawer {
-            margin-top: 0.5rem;
-            padding: 0.75rem;
-            background: #0f172a;
-            border-radius: 8px;
-            border-left: 3px solid var(--tpc-blue-vibrant);
-            display: none;
+            border-radius: 9999px;
             font-size: 0.72rem;
-            color: #cbd5e1;
-            font-family: 'JetBrains Mono', monospace;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-            line-height: 1.5;
-        }
-
-        .sources-drawer.open {
-            display: block;
-        }
-
-        /* Loading Indicator */
-        .loading-dots {
-            display: flex;
-            gap: 5px;
-            padding: 6px 0;
-        }
-
-        .loading-dots span {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: var(--tpc-blue-vibrant);
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-
-        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
-        }
-
-        /* Input Area matching Login Screen Form */
-        .chat-input-area {
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
-            padding: 1.15rem 1.5rem 1.25rem;
-        }
-
-        .chat-form {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-        }
-
-        .input-wrapper {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 14px;
-            color: #94a3b8;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .chat-input {
-            width: 100%;
-            background: #ffffff;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 0.85rem 1rem 0.85rem 2.75rem;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .chat-input:focus {
-            border-color: var(--tpc-blue-vibrant);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        }
-
-        .chat-input::placeholder {
-            color: #94a3b8;
-        }
-
-        .send-button {
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 0.85rem 1.5rem;
-            color: #ffffff;
-            font-size: 0.9rem;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-primary);
-            display: inline-flex;
+        }
+
+        .badge-cleared {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-pending {
+            background: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-locked {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Right Column Side Cards */
+        .side-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .quick-actions-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .action-row-btn {
+            display: flex;
             align-items: center;
-            gap: 0.4rem;
-            flex-shrink: 0;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.84rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
-        .send-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        .action-row-btn:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--tpc-blue-primary);
+            transform: translateX(2px);
         }
 
-        .send-button:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
-            transform: none;
+        .action-icon-group {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
         }
 
-        /* Footer Security Tag */
-        .security-footer {
-            margin-top: 0.85rem;
+        /* Embed Instructions Modal */
+        .embed-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 25, 60, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .embed-modal-overlay.active {
+            display: flex;
+        }
+
+        .embed-modal-content {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 620px;
+            padding: 2rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            position: relative;
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: #64748b;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.45rem;
-            font-size: 0.74rem;
-            color: var(--text-muted);
-            font-weight: 500;
         }
 
-        .security-footer svg {
-            color: var(--tpc-green);
+        .modal-close-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
         }
 
-        .security-footer strong {
-            color: #334155;
+        .code-snippet-box {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+            position: relative;
+            word-break: break-all;
+            border-left: 4px solid var(--tpc-blue-vibrant);
+        }
+
+        .copy-code-btn {
+            background: var(--tpc-blue-vibrant);
+            color: #ffffff;
+            border: none;
+            padding: 0.65rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-code-btn:hover {
+            background: var(--tpc-blue-primary);
+        }
+
+        /* --- Mobile Frame Simulator Mode --- */
+        .mobile-sim-wrapper {
+            display: none;
+            padding: 2rem 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.simulator-active .portal-main {
+            display: none;
+        }
+
+        body.simulator-active .mobile-sim-wrapper {
+            display: flex;
+        }
+
+        .iphone-frame {
+            width: 385px;
+            height: 780px;
+            background: #111827;
+            border-radius: 48px;
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.6), 0 0 0 12px #374151, 0 0 0 14px #1f2937;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iphone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 26px;
+            background: #111827;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 100;
+        }
+
+        .iphone-screen {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
         }
     </style>
 </head>
 <body class="blueprint-bg">
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="header-content">
-            <a href="https://student-clearance-system-urxl.onrender.com" target="_blank" rel="noopener" class="brand-badge" title="Go to TPC Clearance Portal">
-                <div class="tpc-logo">
-                    <!-- TPC College Crest Emblem SVG -->
+    <!-- Top Utility & Embed Action Bar -->
+    <div class="utility-bar">
+        <div class="utility-left">
+            <span class="utility-pill">System Preview</span>
+            <span>Talibon Polytechnic College Student Clearance Portal + Floating Chatbot</span>
+        </div>
+        <div class="utility-actions">
+            <button type="button" class="util-btn active" id="view-desktop-btn" onclick="setViewMode('desktop')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Desktop Portal
+            </button>
+            <button type="button" class="util-btn" id="view-mobile-btn" onclick="setViewMode('mobile')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                Mobile Phone Preview
+            </button>
+            <button type="button" class="util-btn" onclick="openEmbedModal()" style="background:#2563eb;border-color:#60a5fa;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                Embed in Your System
+            </button>
+            <a href="/widget" target="_blank" class="util-btn" title="Open Standalone Widget">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Fullscreen Widget
+            </a>
+        </div>
+    </div>
+
+    <!-- TPC Portal Navigation Bar -->
+    <header class="portal-header">
+        <div class="header-container">
+            <a href="/" class="header-brand">
+                <div class="tpc-crest-logo">
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
                         <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
@@ -683,346 +698,268 @@
                         <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
                     </svg>
                 </div>
-                <div class="brand-titles">
-                    <span class="brand-sub">Talibon Polytechnic College</span>
-                    <span class="brand-main">Student Clearance Assistant</span>
+                <div class="brand-text">
+                    <span class="brand-college">Talibon Polytechnic College</span>
+                    <span class="brand-title">Student Clearance Portal</span>
                 </div>
             </a>
 
-            <div class="header-center-pill">
-                <span class="dot"></span>
-                <span>Role-Based Clearance Platform</span>
-            </div>
-
-            <div class="header-actions">
-                <div class="status-pill">
-                    <span class="status-dot"></span>
-                    <span>Assistant Online</span>
+            <div class="header-nav">
+                <div class="student-chip">
+                    <div class="student-avatar">JD</div>
+                    <span>Juan Dela Cruz • BSIT 4-A</span>
                 </div>
-                <a href="https://student-clearance-system-urxl.onrender.com/login" target="_blank" rel="noopener" class="portal-btn">
-                    <span>Portal Login</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main>
-        <!-- Left Sidebar (Help & Frequently Asked Questions) -->
-        <aside class="sidebar">
-            <div class="welcome-card">
-                <div class="welcome-title">TPC Clearance Guide</div>
-                <div class="welcome-desc">
-                    Your institutional assistant for navigating clearances, signatory approvals, resolving pending accountabilities, and securing graduation documents.
+    <!-- Main Clearance Portal View -->
+    <main class="portal-main">
+        <!-- Status Hero Banner -->
+        <section class="status-hero">
+            <div class="hero-info">
+                <div class="term-badge">
+                    <span>Academic Year 2026-2027 • 1st Semester Clearance</span>
                 </div>
-                <button type="button" class="new-chat-btn" onclick="resetChat()">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    <span>New Conversation</span>
-                </button>
+                <h1 class="hero-title">Student Clearance Status: In Progress</h1>
+                <p class="hero-desc">
+                    Your clearance request is currently undergoing review across institutional signatory offices. Please verify outstanding laboratory balances or library returns before finals week.
+                </p>
             </div>
 
-            <div class="faq-section">
-                <div class="faq-heading">Frequently Asked Questions</div>
-
-                <button type="button" class="faq-item" onclick="askQuestion('How do I submit and complete a clearance request in the portal?')">
-                    <span class="faq-icon">🚀</span>
-                    <span>How do I submit my clearance request?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('What are all the signatory offices involved in the student clearance process?')">
-                    <span class="faq-icon">🏢</span>
-                    <span>What signatory offices must approve?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('What should I do if an office rejects my clearance request?')">
-                    <span class="faq-icon">⚠️</span>
-                    <span>What if an office rejects my clearance?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('Can I process my clearance if I still have an unpaid tuition balance?')">
-                    <span class="faq-icon">💳</span>
-                    <span>Can I clear with an unpaid balance?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('What are the rules and accountabilities for the campus Library?')">
-                    <span class="faq-icon">📚</span>
-                    <span>What are the Library accountability rules?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('How do I download and verify my final clearance certificate?')">
-                    <span class="faq-icon">📄</span>
-                    <span>How do I download my certificate?</span>
-                </button>
-
-                <button type="button" class="faq-item" onclick="askQuestion('Can I request my Transcript of Records (TOR) before clearance is finished?')">
-                    <span class="faq-icon">🎓</span>
-                    <span>Can I get my TOR while clearance is pending?</span>
-                </button>
-            </div>
-
-            <div class="sidebar-footer">
-                <span>Talibon Polytechnic College</span>
-                <span>Student Clearance System</span>
-            </div>
-        </aside>
-
-        <!-- Right Main Chat Interface -->
-        <section class="chat-portal-wrapper">
-            <div class="chat-card">
-                <div class="card-top-gradient"></div>
-
-                <div class="chat-card-header">
-                    <div class="portal-icon-box">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                    </div>
-                    <div class="portal-header-info">
-                        <div class="portal-welcome">TPC Clearance Assistant</div>
-                        <div class="portal-sub">Ask any question about clearance procedures, signatory offices, or policies</div>
-                    </div>
-                    <button type="button" class="clear-btn" onclick="resetChat()" title="Reset conversation">
-                        Clear Chat
-                    </button>
+            <div class="hero-progress-box">
+                <div class="progress-header">
+                    <span>Clearance Progress</span>
+                    <span style="color:#34d399;">5 of 8 Approved (62%)</span>
                 </div>
-
-                <!-- Chat History Messages -->
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message-bubble bot-message">
-                        <div class="bot-meta">
-                            <span class="bot-tag">TPC Assistant</span>
-                            <span>• Official Guide</span>
-                        </div>
-                        <div>
-                            Hello! I am your <strong>Talibon Polytechnic College Student Clearance Assistant</strong>. You can ask me anything about the student clearance workflow, required signatory offices, resolving accountabilities, or downloading your completion certificate.
-                        </div>
-                        <div class="starter-chips">
-                            <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to request clearance?')">
-                                📋 How to request clearance?
-                            </button>
-                            <button type="button" class="starter-chip" onclick="askQuestion('Who are the signatory offices?')">
-                                🏛️ Signatory offices
-                            </button>
-                            <button type="button" class="starter-chip" onclick="askQuestion('How do I download my certificate?')">
-                                📄 Download certificate
-                            </button>
-                        </div>
-                    </div>
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill"></div>
                 </div>
-
-                <!-- Chat Input Form -->
-                <div class="chat-input-area">
-                    <form class="chat-form" id="chat-form">
-                        <div class="input-wrapper">
-                            <div class="input-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                            </div>
-                            <input 
-                                type="text" 
-                                class="chat-input" 
-                                id="user-query-input" 
-                                placeholder="Ask about clearance steps, signatory offices, or policies..." 
-                                autocomplete="off"
-                                required
-                            />
-                        </div>
-                        <button type="submit" class="send-button" id="send-button">
-                            <span>Send</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </button>
-                    </form>
-
-                    <!-- Official Security Tag -->
-                    <div class="security-footer">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <polyline points="9 12 11 14 15 10"></polyline>
-                        </svg>
-                        <span>Official Clearance Portal • <strong>Grounded Institutional Guidance</strong></span>
-                    </div>
+                <div class="progress-footer">
+                    <span>⚡ 2 pending assessments • 1 locked</span>
                 </div>
             </div>
         </section>
+
+        <!-- Dashboard Table Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Table -->
+            <div class="white-card">
+                <div class="card-header-bar">
+                    <h2 class="card-heading">
+                        <span>📋 Signatory Office Approvals</span>
+                    </h2>
+                    <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Updated Just Now</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="clearance-table">
+                        <thead>
+                            <tr>
+                                <th>Department / Office</th>
+                                <th>Signatory Officer</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Dean of Computer Studies</div>
+                                    <div class="office-officer">Academic Affairs</div>
+                                </td>
+                                <td>Engr. M. Torralba</td>
+                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
+                                <td>All grades submitted &amp; verified</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">College Library</div>
+                                    <div class="office-officer">Learning Resource Center</div>
+                                </td>
+                                <td>Mrs. C. Aumentado</td>
+                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
+                                <td>No overdue books or fines</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Office of Student Affairs (OSAS)</div>
+                                    <div class="office-officer">Student Welfare</div>
+                                </td>
+                                <td>Prof. R. Boyles</td>
+                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
+                                <td>Good moral clearance granted</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Supreme Student Council</div>
+                                    <div class="office-officer">Student Government</div>
+                                </td>
+                                <td>SSC Auditor</td>
+                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
+                                <td>Organization fees settled</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Property Custodian</div>
+                                    <div class="office-officer">Campus Facilities</div>
+                                </td>
+                                <td>Mr. A. Cutamora</td>
+                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
+                                <td>Laboratory equipment accounted</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Accounting Office</div>
+                                    <div class="office-officer">Finance &amp; Cashier</div>
+                                </td>
+                                <td>Ms. E. Garcia</td>
+                                <td><span class="status-badge badge-pending">⏳ Pending Assessment</span></td>
+                                <td>Pending remaining PHP 350 lab breakages fee</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">Guidance &amp; Counseling</div>
+                                    <div class="office-officer">Student Services</div>
+                                </td>
+                                <td>Ms. K. Munez</td>
+                                <td><span class="status-badge badge-pending">⏳ In Queue</span></td>
+                                <td>Scheduled exit interview</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="office-name">College Registrar</div>
+                                    <div class="office-officer">Records Management</div>
+                                </td>
+                                <td>Dr. J. Auxtero</td>
+                                <td><span class="status-badge badge-locked">🔒 Locked</span></td>
+                                <td>Requires all preceding signatory approvals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="side-col">
+                <div class="quick-actions-card">
+                    <h3 style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:0.25rem;">Portal Actions</h3>
+                    
+                    <button type="button" class="action-row-btn" onclick="window.TPCChatAssistant && window.TPCChatAssistant.open()">
+                        <div class="action-icon-group">
+                            <span>💬</span>
+                            <span>Ask Clearance Assistant</span>
+                        </div>
+                        <span style="color:#2563eb; font-weight:700;">Open &rarr;</span>
+                    </button>
+
+                    <button type="button" class="action-row-btn" onclick="openEmbedModal()">
+                        <div class="action-icon-group">
+                            <span>🚀</span>
+                            <span>Get 1-Line Embed Code</span>
+                        </div>
+                        <span style="color:#2563eb; font-weight:700;">View &rarr;</span>
+                    </button>
+
+                    <button type="button" class="action-row-btn" onclick="setViewMode('mobile')">
+                        <div class="action-icon-group">
+                            <span>📱</span>
+                            <span>Test Mobile Phone View</span>
+                        </div>
+                        <span style="color:#2563eb; font-weight:700;">Test &rarr;</span>
+                    </button>
+                </div>
+
+                <div class="quick-actions-card" style="background:#0f172a; color:#ffffff;">
+                    <div style="font-size:0.7rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Clearance System Tips</div>
+                    <div style="font-size:0.88rem; font-weight:700; margin-top:0.25rem;">Stuck on an Office?</div>
+                    <p style="font-size:0.78rem; color:#94a3b8; line-height:1.5; margin-top:0.35rem;">
+                        Click the floating chat icon in the bottom-right corner to ask the AI assistant how to resolve pending holds, request re-evaluation, or contact signatory personnel.
+                    </p>
+                </div>
+            </div>
+        </div>
     </main>
 
+    <!-- Mobile Phone Frame Simulator -->
+    <div class="mobile-sim-wrapper">
+        <div class="iphone-frame">
+            <div class="iphone-notch"></div>
+            <iframe src="/widget" class="iphone-screen" title="Mobile Chatbot Preview"></iframe>
+        </div>
+    </div>
+
+    <!-- Embed Code Modal -->
+    <div class="embed-modal-overlay" id="embed-modal" onclick="closeEmbedModal(event)">
+        <div class="embed-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">🚀 Embed Pop-up Chatbot in Your System</div>
+                <button type="button" class="modal-close-btn" onclick="closeEmbedModal()">✕</button>
+            </div>
+            <p style="font-size:0.85rem; color:#475569; line-height:1.55;">
+                To add this floating pop-up chatbot to your live student clearance portal (e.g. <code>student-clearance-system-urxl.onrender.com</code> or any Laravel/Blade/HTML template), just paste this single script tag right before the closing <code>&lt;/body&gt;</code> tag:
+            </p>
+
+            <div class="code-snippet-box" id="code-snippet">&lt;script src="https://minicap-production.up.railway.app/widget.js" async&gt;&lt;/script&gt;</div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1.25rem;">
+                <button type="button" class="copy-code-btn" id="copy-btn" onclick="copyEmbedCode()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span id="copy-text">Copy Script Code</span>
+                </button>
+                <span style="font-size:0.75rem; color:#64748b;">Works automatically on both desktop and mobile!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Automatically load the floating widget on the portal page! -->
+    <script src="/widget.js" async></script>
+
     <script>
-        function askQuestion(text) {
-            const input = document.getElementById('user-query-input');
-            if (input) {
-                input.value = text;
-                handleSend();
+        function setViewMode(mode) {
+            const deskBtn = document.getElementById('view-desktop-btn');
+            const mobBtn = document.getElementById('view-mobile-btn');
+            if (mode === 'mobile') {
+                document.body.classList.add('simulator-active');
+                if (mobBtn) mobBtn.classList.add('active');
+                if (deskBtn) deskBtn.classList.remove('active');
+            } else {
+                document.body.classList.remove('simulator-active');
+                if (deskBtn) deskBtn.classList.add('active');
+                if (mobBtn) mobBtn.classList.remove('active');
             }
         }
 
-        function resetChat() {
-            const chat = document.getElementById('chat-messages');
-            if (!chat) return;
-            chat.innerHTML = `
-                <div class="message-bubble bot-message">
-                    <div class="bot-meta">
-                        <span class="bot-tag">TPC Assistant</span>
-                        <span>• Official Guide</span>
-                    </div>
-                    <div>
-                        Hello! I am your <strong>Talibon Polytechnic College Student Clearance Assistant</strong>. You can ask me anything about the student clearance workflow, required signatory offices, resolving accountabilities, or downloading your completion certificate.
-                    </div>
-                    <div class="starter-chips">
-                        <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to request clearance?')">
-                            📋 How to request clearance?
-                        </button>
-                        <button type="button" class="starter-chip" onclick="askQuestion('Who are the signatory offices?')">
-                            🏛️ Signatory offices
-                        </button>
-                        <button type="button" class="starter-chip" onclick="askQuestion('How do I download my certificate?')">
-                            📄 Download certificate
-                        </button>
-                    </div>
-                </div>
-            `;
-            const input = document.getElementById('user-query-input');
-            if (input) {
-                input.value = '';
-                input.focus();
-            }
+        function openEmbedModal() {
+            const modal = document.getElementById('embed-modal');
+            if (modal) modal.classList.add('active');
         }
 
-        async function handleSend(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            const input = document.getElementById('user-query-input');
-            if (!input) return false;
-            const query = input.value.trim();
-            if (!query) return false;
+        function closeEmbedModal(e) {
+            const modal = document.getElementById('embed-modal');
+            if (modal) modal.classList.remove('active');
+        }
 
-            input.value = '';
-            appendUserMessage(query);
-
-            const sendBtn = document.getElementById('send-button');
-            if (sendBtn) sendBtn.disabled = true;
-
-            const loadingBubble = appendLoadingMessage();
-
-            try {
-                const response = await fetch('/api/query', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query })
-                });
-
-                const data = await response.json();
-                if (loadingBubble && loadingBubble.parentNode) {
-                    loadingBubble.parentNode.removeChild(loadingBubble);
+        function copyEmbedCode() {
+            const code = '<script src="https://minicap-production.up.railway.app/widget.js" async><' + '/script>';
+            navigator.clipboard.writeText(code).then(function() {
+                const text = document.getElementById('copy-text');
+                if (text) text.textContent = 'Copied to Clipboard! ✓';
+                setTimeout(function() {
+                    if (text) text.textContent = 'Copy Script Code';
+                }, 2500);
+            }).catch(function() {
+                const snip = document.getElementById('code-snippet');
+                if (snip) {
+                    const range = document.createRange();
+                    range.selectNode(snip);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
                 }
-
-                if (response.ok) {
-                    appendBotMessage(data.answer, data.retrieved_chunks);
-                } else {
-                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), []);
-                }
-            } catch (err) {
-                if (loadingBubble && loadingBubble.parentNode) {
-                    loadingBubble.parentNode.removeChild(loadingBubble);
-                }
-                appendBotMessage('Network Error: ' + err.message, []);
-            } finally {
-                if (sendBtn) sendBtn.disabled = false;
-                input.focus();
-            }
-            return false;
+            });
         }
-
-        function appendUserMessage(text) {
-            const chat = document.getElementById('chat-messages');
-            if (!chat) return;
-            const div = document.createElement('div');
-            div.className = 'message-bubble user-message';
-            div.textContent = text;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function appendLoadingMessage() {
-            const chat = document.getElementById('chat-messages');
-            if (!chat) return null;
-            const div = document.createElement('div');
-            div.className = 'message-bubble bot-message';
-            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Searching clearance guidelines & preparing answer...</span></div>' +
-                            '<div class="loading-dots"><span></span><span></span><span></span></div>';
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-            return div;
-        }
-
-        function appendBotMessage(answer, chunks) {
-            const chat = document.getElementById('chat-messages');
-            if (!chat) return;
-            const div = document.createElement('div');
-            div.className = 'message-bubble bot-message';
-
-            let sourcesHtml = '';
-            if (chunks && chunks.length > 0) {
-                const snippet = chunks.map(function(c, i) {
-                    return '[Reference ' + (i + 1) + ']\n' + c.trim();
-                }).join('\n\n' + '='.repeat(35) + '\n\n');
-
-                sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
-                              '📖 View Handbook References (' + chunks.length + ') &darr;' +
-                              '</button>' +
-                              '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
-            }
-
-            div.innerHTML = '<div class="bot-meta">' +
-                            '<span class="bot-tag">TPC Assistant</span>' +
-                            '</div>' +
-                            '<div>' + formatMarkdown(answer || '') + '</div>' +
-                            sourcesHtml;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function toggleSources(btn) {
-            if (btn && btn.nextElementSibling) {
-                btn.nextElementSibling.classList.toggle('open');
-            }
-        }
-
-        function formatMarkdown(text) {
-            let escaped = escapeHtml(text);
-            // Convert bold **text** to <strong>text</strong>
-            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Line breaks
-            escaped = escaped.replace(/\n/g, '<br>');
-            return escaped;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        window.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('chat-form');
-            if (form) {
-                form.addEventListener('submit', handleSend);
-            }
-        });
     </script>
 </body>
 </html>

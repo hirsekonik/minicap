@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TPC Clearance Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tpc-blue-dark: #081a48;
+            --tpc-blue-deep: #0f2e8a;
+            --tpc-blue-primary: #1d4ed8;
+            --tpc-blue-vibrant: #2563eb;
+            --tpc-blue-light: #3b82f6;
+            --tpc-cyan: #06b6d4;
+            --tpc-purple: #8b5cf6;
+            --tpc-green: #10b981;
+            
+            --bg-card: #ffffff;
+            --bg-messages: #f8fafc;
+            --text-dark: #0f172a;
+            --text-slate: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            
+            --shadow-subtle: 0 2px 6px rgba(0, 0, 0, 0.04);
+            --shadow-primary: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .widget-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100dvh;
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 641px) {
+            .widget-card {
+                border-radius: 18px;
+                box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.08);
+            }
+        }
+
+        /* Top Signature Gradient Accent */
+        .card-top-gradient {
+            height: 4px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--tpc-cyan) 0%, var(--tpc-blue-vibrant) 50%, var(--tpc-purple) 100%);
+            flex-shrink: 0;
+        }
+
+        /* Header matching Messenger & TPC theme */
+        .widget-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            min-width: 0;
+        }
+
+        .mobile-back-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #334155;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            margin-left: -4px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-back-btn:hover, .mobile-back-btn:active {
+            background: #f1f5f9;
+        }
+
+        @media (max-width: 640px) {
+            .mobile-back-btn {
+                display: flex;
+            }
+        }
+
+        .tpc-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .tpc-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .tpc-logo svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .avatar-online-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--tpc-green);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 4px var(--tpc-green);
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .header-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .header-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            color: var(--tpc-blue-vibrant);
+            flex-shrink: 0;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .header-btn:hover, .header-btn:active {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Chat Messages Container */
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            background: var(--bg-messages);
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .message-timestamp {
+            align-self: center;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0.25rem 0;
+        }
+
+        .message-bubble {
+            max-width: 86%;
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+            font-size: 0.88rem;
+            line-height: 1.55;
+            word-wrap: break-word;
+            position: relative;
+            animation: messagePop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translateY(6px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-slate);
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .bot-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 0.35rem;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .bot-meta .bot-tag {
+            color: var(--tpc-blue-primary);
+            font-weight: 700;
+        }
+
+        /* Quick Starters Carousel */
+        .starter-chips-wrap {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .chips-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .starter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .starter-chip {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: var(--tpc-blue-primary);
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.4rem 0.7rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: left;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .starter-chip:hover, .starter-chip:active {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+
+        /* Collapsible References */
+        .sources-toggle {
+            margin-top: 0.65rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: var(--tpc-blue-primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .sources-toggle:hover {
+            background: #e2e8f0;
+        }
+
+        .sources-drawer {
+            margin-top: 0.45rem;
+            padding: 0.65rem;
+            background: #0f172a;
+            border-radius: 8px;
+            border-left: 3px solid var(--tpc-blue-vibrant);
+            display: none;
+            font-size: 0.7rem;
+            color: #cbd5e1;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre-wrap;
+            max-height: 160px;
+            overflow-y: auto;
+            line-height: 1.45;
+        }
+
+        .sources-drawer.open {
+            display: block;
+        }
+
+        /* Typing Indicator */
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+            padding: 6px 4px;
+        }
+
+        .loading-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--tpc-blue-vibrant);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* Input Area with Mobile Viewport Safety */
+        .chat-input-area {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 0.75rem 1rem max(0.85rem, env(safe-area-inset-bottom));
+            flex-shrink: 0;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            color: #94a3b8;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 22px;
+            padding: 0.7rem 0.85rem 0.7rem 2.45rem;
+            font-size: 16px; /* 16px prevents iOS Safari auto-zoom */
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .chat-input:focus {
+            border-color: var(--tpc-blue-vibrant);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .chat-input::placeholder {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+        }
+
+        .send-button:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .send-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-footer {
+            margin-top: 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            font-size: 0.66rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .security-footer svg {
+            color: var(--tpc-green);
+        }
+
+        /* Directory Modal */
+        .directory-modal {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .directory-modal.active {
+            display: flex;
+        }
+        .directory-card {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 340px;
+            padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            animation: messagePop 0.2s ease;
+        }
+        .directory-card h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .directory-card p {
+            font-size: 0.78rem;
+            color: #475569;
+            line-height: 1.45;
+            margin-bottom: 0.85rem;
+        }
+        .directory-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            margin-bottom: 1rem;
+        }
+        .directory-list li {
+            padding: 0.4rem 0.6rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .directory-list strong {
+            color: #1e40af;
+        }
+        .directory-close-btn {
+            width: 100%;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-card">
+        <div class="card-top-gradient"></div>
+
+        <!-- Header -->
+        <div class="widget-header">
+            <div class="header-left">
+                <!-- Mobile back button to close popup on small screens -->
+                <button type="button" class="mobile-back-btn" onclick="closeWidget()" title="Back">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </button>
+
+                <div class="tpc-avatar-wrap">
+                    <div class="tpc-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
+                            <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
+                            <path d="M50 20 L72 32 V54 C72 68 50 80 50 80 C50 80 28 68 28 54 V32 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+                            <path d="M50 24 L68 34 V52 C68 64 50 74 50 74 C50 74 32 64 32 52 V34 Z" fill="#1e40af"/>
+                            <path d="M47 38 L53 38 L52 56 L48 56 Z" fill="#f59e0b"/>
+                            <circle cx="50" cy="35" r="4" fill="#ef4444"/>
+                            <path d="M44 58 L56 58 L50 68 Z" fill="#f59e0b"/>
+                            <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                    <div class="avatar-online-dot"></div>
+                </div>
+
+                <div class="header-titles">
+                    <div class="header-title-row">
+                        <span class="header-title">TPC Clearance Assistant</span>
+                        <span class="verified-badge" title="Official Verified Assistant">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="header-status">
+                        <span>Active now • Clearance Portal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons matching Facebook Messenger popup: Info/Phone, Reset, Minimize, Close -->
+            <div class="header-actions">
+                <button type="button" class="header-btn" onclick="toggleDirectory()" title="Signatory Office Directory">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </button>
+                <button type="button" class="header-btn" onclick="resetChat()" title="Start New Chat">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                    </svg>
+                </button>
+                <button type="button" class="header-btn" onclick="minimizeWidget()" title="Minimize">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+                <button type="button" class="header-btn" onclick="closeWidget()" title="Close chat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Feed -->
+        <div class="chat-messages" id="chat-messages">
+            <div class="message-timestamp" id="chat-start-time">Today</div>
+
+            <div class="message-bubble bot-message">
+                <div class="bot-meta">
+                    <span class="bot-tag">TPC Assistant</span>
+                    <span>• Official Handbook AI</span>
+                </div>
+                <div>
+                    Hello! I'm your official <strong>TPC Clearance Assistant</strong>. Ask me anything about clearance requirements, signatory offices, status rejections, or policies:
+                </div>
+                
+                <div class="starter-chips-wrap">
+                    <div class="chips-label">Frequently Asked</div>
+                    <div class="starter-chips">
+                        <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to submit clearance?')">
+                            🚀 How to submit clearance?
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('What are the required signatory offices?')">
+                            🏛️ Signatory offices
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('What happens if an office rejects my request?')">
+                            ⚠️ Rejection & re-evaluation
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('Can I clear if I have an unpaid tuition balance?')">
+                            💳 Tuition balance policy
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('How do I download my clearance certificate?')">
+                            📄 Download certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <form class="chat-form" id="chat-form" onsubmit="return handleSend(event)">
+                <div class="input-wrapper">
+                    <div class="input-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        id="user-query-input" 
+                        placeholder="Type a message..." 
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+                <button type="submit" class="send-button" id="send-button" title="Send message">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="security-footer">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                <span>Grounded on TPC Student Handbook &amp; Clearance Dataset</span>
+            </div>
+        </div>
+
+        <!-- Office Directory Modal -->
+        <div class="directory-modal" id="directory-modal">
+            <div class="directory-card">
+                <h4>
+                    <span>🏛️ Key Clearance Offices</span>
+                    <button type="button" class="header-btn" onclick="toggleDirectory()" style="width:24px;height:24px;">✕</button>
+                </h4>
+                <p>Standard sequence of clearance offices for Talibon Polytechnic College:</p>
+                <ul class="directory-list">
+                    <li><span>1. Department Dean / Chair</span><strong>Academic</strong></li>
+                    <li><span>2. College Library</span><strong>Books / Overdues</strong></li>
+                    <li><span>3. Student Affairs (OSAS)</span><strong>Conduct &amp; Orgs</strong></li>
+                    <li><span>4. Accounting Office</span><strong>Financial Dues</strong></li>
+                    <li><span>5. College Registrar</span><strong>Final Issuance</strong></li>
+                </ul>
+                <button type="button" class="directory-close-btn" onclick="toggleDirectory()">Close Directory</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set dynamic time stamp
+        (function() {
+            const timeEl = document.getElementById('chat-start-time');
+            if (timeEl) {
+                const now = new Date();
+                timeEl.textContent = 'Today ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        })();
+
+        function closeWidget() {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'tpc_close_widget' }, '*');
+            } else {
+                window.close();
+            }
+        }
+
+        function minimizeWidget() {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'tpc_minimize_widget' }, '*');
+            }
+        }
+
+        function toggleDirectory() {
+            const modal = document.getElementById('directory-modal');
+            if (modal) {
+                modal.classList.toggle('active');
+            }
+        }
+
+        function askQuestion(text) {
+            const input = document.getElementById('user-query-input');
+            if (input) {
+                input.value = text;
+                handleSend();
+            }
+        }
+
+        function resetChat() {
+            const chat = document.getElementById('chat-messages');
+            if (!chat) return;
+            const now = new Date();
+            const timeStr = 'Today ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            chat.innerHTML = `
+                <div class="message-timestamp">${timeStr}</div>
+                <div class="message-bubble bot-message">
+                    <div class="bot-meta">
+                        <span class="bot-tag">TPC Assistant</span>
+                        <span>• Official Handbook AI</span>
+                    </div>
+                    <div>
+                        Chat reset. How can I assist with your <strong>TPC student clearance</strong>?
+                    </div>
+                    <div class="starter-chips-wrap">
+                        <div class="starter-chips">
+                            <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to submit clearance?')">
+                                🚀 How to submit clearance?
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('What are the required signatory offices?')">
+                                🏛️ Signatory offices
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('What happens if an office rejects my request?')">
+                                ⚠️ Rejection & re-evaluation
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('Can I clear if I have an unpaid tuition balance?')">
+                                💳 Tuition balance policy
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('How do I download my clearance certificate?')">
+                                📄 Download certificate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const input = document.getElementById('user-query-input');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        async function handleSend(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const input = document.getElementById('user-query-input');
+            if (!input) return false;
+            const query = input.value.trim();
+            if (!query) return false;
+
+            input.value = '';
+            appendUserMessage(query);
+
+            const sendBtn = document.getElementById('send-button');
+            if (sendBtn) sendBtn.disabled = true;
+
+            const loadingBubble = appendLoadingMessage();
+
+            try {
+                const response = await fetch('/api/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+                if (loadingBubble && loadingBubble.parentNode) {
+                    loadingBubble.parentNode.removeChild(loadingBubble);
+                }
+
+                if (response.ok) {
+                    appendBotMessage(data.answer, data.retrieved_chunks);
+                } else {
+                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), []);
+                }
+            } catch (err) {
+                if (loadingBubble && loadingBubble.parentNode) {
+                    loadingBubble.parentNode.removeChild(loadingBubble);
+                }
+                appendBotMessage('Network Error: ' + err.message, []);
+            } finally {
+                if (sendBtn) sendBtn.disabled = false;
+                input.focus();
+            }
+            return false;
+        }
+
+        function appendUserMessage(text) {
+            const chat = document.getElementById('chat-messages');
+            if (!chat) return;
+            const div = document.createElement('div');
+            div.className = 'message-bubble user-message';
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function appendLoadingMessage() {
+            const chat = document.getElementById('chat-messages');
+            if (!chat) return null;
+            const div = document.createElement('div');
+            div.className = 'message-bubble bot-message';
+            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Searching clearance guidelines...</span></div>' +
+                            '<div class="loading-dots"><span></span><span></span><span></span></div>';
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            return div;
+        }
+
+        function appendBotMessage(answer, chunks) {
+            const chat = document.getElementById('chat-messages');
+            if (!chat) return;
+            const div = document.createElement('div');
+            div.className = 'message-bubble bot-message';
+
+            let sourcesHtml = '';
+            if (chunks && chunks.length > 0) {
+                const snippet = chunks.map(function(c, i) {
+                    return '[Reference ' + (i + 1) + ']\n' + c.trim();
+                }).join('\n\n' + '='.repeat(30) + '\n\n');
+
+                sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
+                              '📖 Handbook References (' + chunks.length + ') &darr;' +
+                              '</button>' +
+                              '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
+            }
+
+            div.innerHTML = '<div class="bot-meta">' +
+                            '<span class="bot-tag">TPC Assistant</span>' +
+                            '</div>' +
+                            '<div>' + formatMarkdown(answer || '') + '</div>' +
+                            sourcesHtml;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function toggleSources(btn) {
+            if (btn && btn.nextElementSibling) {
+                btn.nextElementSibling.classList.toggle('open');
+            }
+        }
+
+        function formatMarkdown(text) {
+            let escaped = escapeHtml(text);
+            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            escaped = escaped.replace(/\n/g, '<br>');
+            return escaped;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('chat-form');
+            if (form) {
+                form.addEventListener('submit', handleSend);
+            }
+            const input = document.getElementById('user-query-input');
+            if (input) {
+                input.focus();
+            }
+        });
+    </script>
+</body>
+</html>
