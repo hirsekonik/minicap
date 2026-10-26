@@ -905,6 +905,133 @@
             display: none;
         }
 
+        /* In simulator mode, hide outer-screen desktop widget */
+        body.simulator-mode #tpc-widget-launcher,
+        body.simulator-mode #tpc-widget-teaser,
+        body.simulator-mode #tpc-widget-container {
+            display: none !important;
+        }
+
+        /* --- In-Phone Simulator Chatbot Launcher & Popup --- */
+        .sim-chatbot-wrapper {
+            position: absolute;
+            bottom: 74px; /* Floating directly above the Status bottom nav button */
+            right: 14px;
+            z-index: 120;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .sim-chatbot-teaser {
+            background: #ffffff;
+            color: #0f172a;
+            padding: 0.45rem 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.08);
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            animation: simFloatTeaser 3s ease-in-out infinite;
+            transition: all 0.2s ease;
+        }
+
+        @keyframes simFloatTeaser {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .sim-teaser-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2563eb;
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.6);
+        }
+
+        .sim-teaser-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0 2px;
+            font-size: 11px;
+            line-height: 1;
+        }
+
+        .sim-teaser-close:hover {
+            color: #0f172a;
+        }
+
+        .sim-chatbot-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45), 0 2px 6px rgba(15, 23, 42, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            position: relative;
+            outline: none;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .sim-chatbot-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .sim-chatbot-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sim-pulse-dot {
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+        }
+
+        /* In-Phone Simulator Chat Overlay (Native Mobile Pop-up) */
+        .sim-chat-overlay {
+            position: absolute;
+            inset: 0;
+            background: #ffffff;
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .sim-chat-overlay.active {
+            transform: translateY(0);
+        }
+
+        .sim-chat-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            flex: 1;
+            display: block;
+            background: #f8fafc;
+        }
+
         /* Embed Code Modal */
         .embed-modal-backdrop {
             display: none;
@@ -1275,7 +1402,7 @@
                     <span>Home</span>
                 </a>
 
-                <a href="#" class="mobile-nav-item status-item" onclick="return false;">
+                <a href="#" class="mobile-nav-item status-item" onclick="if(window.TPCChatAssistant) window.TPCChatAssistant.open(); return false;" title="Open Clearance AI Assistant">
                     <div class="nav-icon-wrap">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -1353,6 +1480,22 @@
                     </div>
                 </div>
 
+                <!-- Floating Chatbot Launcher inside Simulator (Anchored Right Above Status Button) -->
+                <div class="sim-chatbot-wrapper" id="sim-chatbot-wrapper">
+                    <div class="sim-chatbot-teaser" id="sim-chatbot-teaser" onclick="toggleSimChat(true)">
+                        <span class="sim-teaser-dot"></span>
+                        <span>Need clearance help? Ask AI</span>
+                        <button type="button" class="sim-teaser-close" onclick="closeSimTeaser(event)" title="Dismiss">✕</button>
+                    </div>
+
+                    <button type="button" class="sim-chatbot-btn" id="sim-chatbot-btn" onclick="toggleSimChat()" title="Open Clearance AI Assistant">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <div class="sim-pulse-dot"></div>
+                    </button>
+                </div>
+
                 <!-- Bottom Navigation Bar inside Simulator -->
                 <div class="mobile-bottom-nav" style="display: flex; position: absolute; bottom: 0;">
                     <div class="mobile-nav-item request-item">
@@ -1385,7 +1528,7 @@
                         <span>Home</span>
                     </div>
 
-                    <div class="mobile-nav-item status-item">
+                    <div class="mobile-nav-item status-item" onclick="toggleSimChat(true); return false;" style="cursor: pointer;" title="Open Clearance AI Assistant">
                         <div class="nav-icon-wrap">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2">
                                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -1395,6 +1538,11 @@
                         </div>
                         <span>Status</span>
                     </div>
+                </div>
+
+                <!-- In-Simulator Mobile Chat Pop-up Overlay (Slides up inside simulated phone) -->
+                <div class="sim-chat-overlay" id="sim-chat-overlay">
+                    <iframe src="/widget" class="sim-chat-frame" id="sim-chat-frame" title="In-Simulator Clearance Assistant"></iframe>
                 </div>
             </div>
         </div>
@@ -1472,6 +1620,31 @@
                 }
             });
         }
+
+        // --- In-Simulator Chat Control ---
+        function toggleSimChat(forceState) {
+            const overlay = document.getElementById('sim-chat-overlay');
+            if (!overlay) return;
+            if (typeof forceState === 'boolean') {
+                if (forceState) overlay.classList.add('active');
+                else overlay.classList.remove('active');
+            } else {
+                overlay.classList.toggle('active');
+            }
+        }
+
+        function closeSimTeaser(e) {
+            if (e) e.stopPropagation();
+            const teaser = document.getElementById('sim-chatbot-teaser');
+            if (teaser) teaser.style.display = 'none';
+        }
+
+        // Listen for close/minimize events from the embedded simulator iframe
+        window.addEventListener('message', function(e) {
+            if (e && e.data && (e.data.type === 'tpc_close_widget' || e.data.type === 'tpc_minimize_widget')) {
+                toggleSimChat(false);
+            }
+        });
     </script>
 </body>
 </html>
