@@ -90,6 +90,26 @@ def health_check():
 def get_prompts():
     return PROMPTS
 
+@app.get("/api/models")
+def get_available_models():
+    api_key = get_gemini_api_key()
+    if not api_key:
+        return {"status": "error", "message": "API key not found"}
+    try:
+        from google import genai
+        client = genai.Client(api_key=api_key)
+        models = []
+        for m in client.models.list():
+            actions = getattr(m, 'supported_actions', []) or []
+            models.append({
+                "name": m.name,
+                "display_name": getattr(m, 'display_name', None),
+                "supported_actions": actions
+            })
+        return {"status": "ok", "count": len(models), "models": models}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 @app.post("/api/query", response_model=QueryResponse)
 def query_rag(request: QueryRequest):
     if not request.query.strip():

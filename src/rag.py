@@ -166,13 +166,53 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
 
     # 2. Call Gemini LLM with context grounding
     user_prompt = f"Context:\n{retrieved_context}\n\nQuestion: {query}"
-    candidate_models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro']
-
     client = genai.Client(api_key=api_key)
+
+    # Dynamically query available models for this specific API key
+    discovered_models = []
+    try:
+        for m in client.models.list():
+            actions = getattr(m, 'supported_actions', []) or []
+            if not actions or 'generateContent' in actions:
+                m_name = (m.name or "").replace("models/", "").strip()
+                if m_name and "gemini" in m_name.lower():
+                    discovered_models.append(m_name)
+        print(f"[Gemini Discovery] Found {len(discovered_models)} models: {discovered_models}", flush=True)
+    except Exception as disc_err:
+        print(f"[Gemini Discovery Warning] Could not list models: {disc_err}", flush=True)
+
+    # Prioritized model candidates
+    default_candidates = [
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-flash-001',
+        'gemini-1.5-flash-002',
+        'gemini-1.5-flash-8b',
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-exp',
+        'gemini-2.0-flash-lite',
+        'gemini-1.5-pro',
+        'gemini-1.5-pro-latest',
+        'gemini-1.0-pro',
+        'gemini-pro'
+    ]
+
+    candidate_models = []
+    if discovered_models:
+        flash_models = [m for m in discovered_models if 'flash' in m.lower()]
+        other_models = [m for m in discovered_models if 'flash' not in m.lower()]
+        candidate_models = flash_models + other_models
+
+    for def_m in default_candidates:
+        if def_m not in candidate_models:
+            candidate_models.append(def_m)
+
     last_err = None
+    attempted_log = []
 
     for model_name in candidate_models:
         try:
+            print(f"[Gemini Attempt] Trying model: {model_name}...", flush=True)
             response = client.models.generate_content(
                 model=model_name,
                 contents=user_prompt,
@@ -190,6 +230,7 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
             if not answer_text:
                 answer_text = "I dont have an answer for that."
 
+            print(f"[Gemini Success] Successfully generated response with {model_name}", flush=True)
             return {
                 "answer": answer_text,
                 "retrieved_chunks": retrieved_docs,
@@ -197,14 +238,35 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
                 "error": None
             }
         except Exception as e:
-            last_err = str(e)
+            err_msg = str(e)
+            print(f"[Gemini Error on {model_name}]: {err_msg}", flush=True)
+            attempted_log.append(f"{model_name}: {err_msg[:80]}")
+            last_err = err_msg
+            # Try once more without system_instruction in config if supported methods differ
+            try:
+                combined_prompt = f"System Instruction:\n{system_prompt}\n\nContext:\n{retrieved_context}\n\nQuestion: {query}"
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=combined_prompt
+                )
+                answer_text = (response.text or "").strip()
+                if answer_text:
+                    print(f"[Gemini Success] Succeeded with {model_name} (combined prompt)", flush=True)
+                    return {
+                        "answer": answer_text,
+                        "retrieved_chunks": retrieved_docs,
+                        "model_used": model_name,
+                        "error": None
+                    }
+            except Exception:
+                pass
             continue
 
     return {
-        "answer": f"Unable to complete query due to API error: {last_err or 'quota limit reached'}",
+        "answer": f"Unable to complete query due to API error: {last_err or 'all model candidates exhausted'}",
         "retrieved_chunks": retrieved_docs,
         "model_used": "none",
-        "error": last_err
+        "error": f"Attempted models ({len(attempted_log)}): {'; '.join(attempted_log[:3])}"
     }
 
 
