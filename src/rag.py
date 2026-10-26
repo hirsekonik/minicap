@@ -240,7 +240,7 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
         except Exception as e:
             err_msg = str(e)
             print(f"[Gemini Error on {model_name}]: {err_msg}", flush=True)
-            attempted_log.append(f"{model_name}: {err_msg[:80]}")
+            attempted_log.append(f"{model_name}: {err_msg}")
             last_err = err_msg
             # Try once more without system_instruction in config if supported methods differ
             try:

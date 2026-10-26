@@ -110,6 +110,22 @@ def get_available_models():
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+@app.get("/api/debug-gemini")
+def debug_gemini(model: str = "gemini-flash-latest"):
+    api_key = get_gemini_api_key()
+    if not api_key:
+        return {"error": "API key not configured"}
+    try:
+        from google import genai
+        client = genai.Client(api_key=api_key)
+        res = client.models.generate_content(
+            model=model,
+            contents="Say hello"
+        )
+        return {"status": "success", "response": res.text}
+    except Exception as e:
+        return {"status": "error", "model": model, "exception_type": type(e).__name__, "message": str(e)}
+
 @app.post("/api/query", response_model=QueryResponse)
 def query_rag(request: QueryRequest):
     if not request.query.strip():
