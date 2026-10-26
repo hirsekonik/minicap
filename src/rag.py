@@ -42,52 +42,32 @@ load_dotenv()
 # Load the embedding model globally once
 embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-# --- 3 Engineered System Prompts ---
-PROMPT_1_GENERAL = (
-    "You are the official TPC Automated Clearance & Academic Policy Assistant. "
-    "Answer questions based ONLY on the provided context retrieved from the TPC Student Handbook "
-    "and the Web-Based Clearance System manual. If the answer is not contained within the provided context, "
-    "you must state exactly: 'I dont have an answer for that'. Do not use outside knowledge."
-)
-
-PROMPT_2_STEPS = (
-    "You are the TPC Clearance Step-by-Step Guide. Your job is to read the provided context and extract any actionable "
-    "requirements or steps. Format your answer as a strict, numbered checklist. Do not include introductory fluff or conversational text. "
-    "If the context does not contain actionable steps related to the query, output: 'No actionable steps found in context.'"
-)
-
-PROMPT_3_DOCS = (
-    "You are the TPC Document Extractor. Analyze the provided context and list ONLY the physical or digital documents "
-    "required for the process mentioned in the query. Format as a bulleted list. Do not include process steps, locations, or conversational text. "
-    "If no documents are mentioned, output 'No documents required.'"
+# --- Unified Institutional Chatbot Persona ---
+SYSTEM_PROMPT = (
+    "You are the official Talibon Polytechnic College (TPC) Student Clearance Assistant. "
+    "Your goal is to provide clear, accurate, practical, and friendly guidance to students, office staff, "
+    "and faculty regarding the web-based clearance system, signatory approval sequence, student handbook policies, "
+    "and department accountabilities.\n\n"
+    "Tone & Answering Guidelines:\n"
+    "1. Ground your answers in the provided TPC Student Handbook and clearance documentation context.\n"
+    "2. Be conversational, polite, supportive, and direct.\n"
+    "3. When explaining step-by-step procedures (e.g., submitting clearance, handling rejections, or getting final approval), "
+    "use clean, numbered steps (1., 2., 3.).\n"
+    "4. When listing signatory offices, documents, or requirements, format them using clean bullet points.\n"
+    "5. If a student asks about topics completely unrelated to college clearance, campus departments, or student academic policies, "
+    "politely inform them that you specialize in TPC student clearance and academic policy guidance."
 )
 
 PROMPTS = {
     1: {
-        "title": "Prompt 1: General Q&A Assistant (Policy Q&A + Hallucination Prevention)",
-        "prompt": PROMPT_1_GENERAL,
-        "style": "Answers policy queries strictly from context. Refuses with 'I dont have an answer for that'.",
+        "title": "TPC Student Clearance Assistant",
+        "prompt": SYSTEM_PROMPT,
+        "style": "Conversational assistant grounded in official TPC clearance rules and student handbook policies.",
         "suggestions": [
-            "What are the signatory offices involved in the student clearance process?",
-            "Can TPC students apply for a tuition discount through the Foreign Aviation Flight School program?"
-        ]
-    },
-    2: {
-        "title": "Prompt 2: Step-by-Step Extractor (Numbered Checklist)",
-        "prompt": PROMPT_2_STEPS,
-        "style": "Extracts actionable procedures into numbered checklists (1, 2, 3). Refuses non-procedures.",
-        "suggestions": [
-            "What are the steps to submit and complete a clearance request in the web-based clearance system?",
-            "What are the step-by-step procedures to apply for a student visa for studying abroad in Japan?"
-        ]
-    },
-    3: {
-        "title": "Prompt 3: Document / Requirement Extractor (Bulleted List)",
-        "prompt": PROMPT_3_DOCS,
-        "style": "Isolates only required documents, slips, and receipts. Ignores narrative text.",
-        "suggestions": [
-            "What documents or clearance forms do students need for final clearance?",
-            "What are the behavioral rules and conduct expected inside the campus library?"
+            "How do I submit and track a clearance request in the portal?",
+            "What signatory offices are required to approve my clearance?",
+            "What happens if an office rejects my clearance request?",
+            "Can I request my Transcript of Records (TOR) if clearance is pending?"
         ]
     }
 }

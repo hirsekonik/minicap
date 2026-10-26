@@ -135,8 +135,8 @@ def query_rag(request: QueryRequest):
     if not col:
         raise HTTPException(status_code=500, detail="ChromaDB collection is not available.")
     
-    prompt_info = PROMPTS.get(request.prompt_id, PROMPTS[1])
-    system_prompt = request.custom_prompt if request.custom_prompt else prompt_info["prompt"]
+    prompt_info = PROMPTS.get(request.prompt_id, PROMPTS.get(1, {}))
+    system_prompt = request.custom_prompt if request.custom_prompt else prompt_info.get("prompt")
     
     result = query_rag_engine(
         collection=col,
@@ -148,8 +148,8 @@ def query_rag(request: QueryRequest):
     return QueryResponse(
         query=request.query,
         answer=result["answer"],
-        prompt_id=request.prompt_id,
-        prompt_title=prompt_info["title"],
+        prompt_id=request.prompt_id or 1,
+        prompt_title=prompt_info.get("title", "TPC Clearance Assistant"),
         retrieved_chunks=result["retrieved_chunks"],
         model_used=result["model_used"],
         error=result.get("error")

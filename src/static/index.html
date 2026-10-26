@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talibon Polytechnic College | Student Clearance System Assistant</title>
-    <meta name="description" content="Official AI Assistant for Talibon Polytechnic College Student Clearance System. Grounded on TPC Student Handbook & Clearance System Documentation.">
+    <title>TPC Student Clearance Assistant | Talibon Polytechnic College</title>
+    <meta name="description" content="Official AI Assistant for Talibon Polytechnic College Student Clearance System. Real-time guidance on clearance workflows, signatory offices, and policies.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* TPC Theme Tokens matching student-clearance-system-urxl.onrender.com */
             --tpc-blue-dark: #081a48;
             --tpc-blue-deep: #0f2e8a;
             --tpc-blue-primary: #1d4ed8;
@@ -18,22 +17,18 @@
             --tpc-blue-light: #3b82f6;
             --tpc-cyan: #06b6d4;
             --tpc-purple: #8b5cf6;
-            --tpc-gold: #f59e0b;
             --tpc-green: #10b981;
             
             --bg-blueprint: #0d276b;
             --border-blueprint: rgba(255, 255, 255, 0.12);
-            --border-blueprint-active: rgba(147, 197, 253, 0.5);
             
             --card-white: #ffffff;
-            --card-bg-light: #f8fafc;
             --text-dark: #0f172a;
             --text-slate: #334155;
             --text-muted: #64748b;
-            --text-light: #f8fafc;
+            --text-light: #ffffff;
             --text-light-muted: rgba(255, 255, 255, 0.75);
             
-            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
             --shadow-card: 0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06);
             --shadow-primary: 0 4px 14px rgba(37, 99, 235, 0.35);
         }
@@ -210,11 +205,11 @@
             border-color: rgba(255, 255, 255, 0.35);
         }
 
-        /* --- Main Dual-Panel Layout --- */
+        /* --- Main Layout --- */
         main {
             flex: 1;
             display: grid;
-            grid-template-columns: 460px 1fr;
+            grid-template-columns: 380px 1fr;
             max-width: 1440px;
             width: 100%;
             margin: 0 auto;
@@ -222,243 +217,121 @@
             gap: 1.75rem;
         }
 
-        @media (max-width: 1080px) {
+        @media (max-width: 980px) {
             main {
                 grid-template-columns: 1fr;
             }
+            .sidebar {
+                display: none;
+            }
         }
 
-        /* --- Left Blueprint Column (System Context & Controls) --- */
-        .blueprint-panel {
+        /* --- Left Sidebar (Help & Frequently Asked) --- */
+        .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.25rem;
             color: #ffffff;
         }
 
-        .hero-banner {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .platform-pill {
-            align-self: flex-start;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #93c5fd;
-        }
-
-        .platform-pill span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--tpc-cyan);
-            box-shadow: 0 0 6px var(--tpc-cyan);
-        }
-
-        .hero-headline {
-            font-size: 2.1rem;
-            font-weight: 800;
-            line-height: 1.18;
-            letter-spacing: -0.025em;
-            color: #ffffff;
-        }
-
-        .hero-subtext {
-            font-size: 0.88rem;
-            color: rgba(255, 255, 255, 0.78);
-            line-height: 1.55;
-            font-weight: 400;
-        }
-
-        /* Stat Pills Grid matching the login screen */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-        }
-
-        .stat-card {
+        .welcome-card {
             background: rgba(255, 255, 255, 0.07);
             border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 12px;
-            padding: 0.85rem;
-            backdrop-filter: blur(8px);
-            transition: transform 0.2s;
+            border-radius: 18px;
+            padding: 1.25rem;
+            backdrop-filter: blur(12px);
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-value {
-            font-size: 1.35rem;
+        .welcome-title {
+            font-size: 1.15rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 0.15rem;
-            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
         }
 
-        .stat-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #93c5fd;
+        .welcome-desc {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.5;
         }
 
-        /* Mode Selector Cards styled like the 4 Role Cards */
-        .modes-section {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .section-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #93c5fd;
-            margin-bottom: 0.2rem;
-        }
-
-        .mode-card {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.9rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(10px);
-            text-align: left;
+        .new-chat-btn {
+            margin-top: 1rem;
             width: 100%;
-        }
-
-        .mode-card:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateX(3px);
-        }
-
-        .mode-card.active {
-            background: rgba(37, 99, 235, 0.35);
-            border-color: #60a5fa;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
-        }
-
-        .mode-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            color: #ffffff;
-            font-size: 1rem;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
         }
 
-        .mode-card.active .mode-icon {
-            background: var(--tpc-blue-vibrant);
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+        .new-chat-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.35);
         }
 
-        .mode-text {
-            flex: 1;
-        }
-
-        .mode-title {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.2rem;
-        }
-
-        .mode-desc {
-            font-size: 0.74rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.4;
-        }
-
-        /* Suggestions Box */
-        .suggestions-card {
+        .faq-section {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
-            padding: 1rem;
+            border-radius: 18px;
+            padding: 1.25rem;
             backdrop-filter: blur(10px);
-        }
-
-        .suggestions-container {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 0.6rem;
+            gap: 0.65rem;
         }
 
-        .suggestion-chip {
-            background: rgba(11, 25, 68, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.14);
+        .faq-heading {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            margin-bottom: 0.25rem;
+        }
+
+        .faq-item {
+            background: rgba(11, 25, 68, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
-            padding: 0.65rem 0.85rem;
-            font-size: 0.76rem;
+            padding: 0.7rem 0.85rem;
+            font-size: 0.78rem;
             color: #e2e8f0;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             text-align: left;
-            line-height: 1.4;
-        }
-
-        .suggestion-chip:hover {
-            background: rgba(30, 58, 138, 0.8);
-            border-color: #60a5fa;
-            transform: translateX(2px);
-            color: #ffffff;
-        }
-
-        .suggestion-chip.test-hallucination {
-            border-left: 3px solid var(--tpc-gold);
-        }
-
-        .suggestion-chip strong {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .suggestion-chip.test-hallucination strong {
-            color: var(--tpc-gold);
-        }
-
-        .suggestion-chip:not(.test-hallucination) strong {
-            color: #93c5fd;
-        }
-
-        .panel-footer {
-            margin-top: auto;
-            padding-top: 0.5rem;
+            line-height: 1.35;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 0.5rem;
+        }
+
+        .faq-item:hover {
+            background: rgba(30, 58, 138, 0.85);
+            border-color: #60a5fa;
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+
+        .faq-item .faq-icon {
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
             font-size: 0.72rem;
             color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: space-between;
         }
 
         /* --- Right Floating White Card (Chat Interface) --- */
@@ -486,7 +359,7 @@
             overflow: hidden;
         }
 
-        /* Signature Top Gradient Bar from Login Screen */
+        /* Signature Top Gradient Bar */
         .card-top-gradient {
             height: 5px;
             width: 100%;
@@ -495,7 +368,7 @@
         }
 
         .chat-card-header {
-            padding: 1.25rem 1.5rem;
+            padding: 1.1rem 1.5rem;
             border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
@@ -504,8 +377,8 @@
         }
 
         .portal-icon-box {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
             display: flex;
@@ -528,22 +401,26 @@
         }
 
         .portal-sub {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: var(--text-muted);
             margin-top: 0.1rem;
         }
 
-        .prompt-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.3rem 0.7rem;
+        .clear-btn {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
             border-radius: 8px;
-            background: #eff6ff;
-            color: var(--tpc-blue-primary);
-            font-size: 0.72rem;
-            font-weight: 700;
-            border: 1px solid #dbeafe;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
         }
 
         /* Messages Area */
@@ -561,7 +438,7 @@
             max-width: 82%;
             padding: 1rem 1.25rem;
             border-radius: 16px;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             line-height: 1.6;
             word-wrap: break-word;
         }
@@ -597,31 +474,45 @@
             color: var(--tpc-blue-primary);
         }
 
-        .bot-model-tag {
+        /* Starter Quick Chips in Welcome Message */
+        .starter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.85rem;
+        }
+
+        .starter-chip {
             background: #eff6ff;
-            color: #2563eb;
-            padding: 0.15rem 0.5rem;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
+            border: 1px solid #bfdbfe;
+            color: var(--tpc-blue-primary);
+            font-size: 0.78rem;
             font-weight: 600;
-            border: 1px solid #dbeafe;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .starter-chip:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
         }
 
         /* Grounded Context Sources Drawer */
         .sources-toggle {
             margin-top: 0.75rem;
-            background: #f1f5f9;
+            background: #f8fafc;
             border: 1px solid #e2e8f0;
             color: var(--tpc-blue-primary);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            padding: 0.35rem 0.75rem;
-            border-radius: 8px;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
             transition: all 0.2s ease;
         }
 
@@ -631,17 +522,17 @@
         }
 
         .sources-drawer {
-            margin-top: 0.6rem;
-            padding: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
             background: #0f172a;
-            border-radius: 10px;
+            border-radius: 8px;
             border-left: 3px solid var(--tpc-blue-vibrant);
             display: none;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: #cbd5e1;
             font-family: 'JetBrains Mono', monospace;
             white-space: pre-wrap;
-            max-height: 220px;
+            max-height: 200px;
             overflow-y: auto;
             line-height: 1.5;
         }
@@ -650,11 +541,11 @@
             display: block;
         }
 
-        /* Loading Dots Indicator */
+        /* Loading Indicator */
         .loading-dots {
             display: flex;
             gap: 5px;
-            padding: 8px 0;
+            padding: 6px 0;
         }
 
         .loading-dots span {
@@ -708,7 +599,7 @@
             border: 1.5px solid #cbd5e1;
             border-radius: 12px;
             padding: 0.85rem 1rem 0.85rem 2.75rem;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: var(--text-dark);
             outline: none;
             transition: all 0.2s ease;
@@ -752,7 +643,7 @@
             transform: none;
         }
 
-        /* Footer Security Pill matching Login Screen */
+        /* Footer Security Tag */
         .security-footer {
             margin-top: 0.85rem;
             display: flex;
@@ -784,21 +675,17 @@
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
                         <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
-                        <!-- Shield -->
                         <path d="M50 20 L72 32 V54 C72 68 50 80 50 80 C50 80 28 68 28 54 V32 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
-                        <!-- Inner blue shield -->
                         <path d="M50 24 L68 34 V52 C68 64 50 74 50 74 C50 74 32 64 32 52 V34 Z" fill="#1e40af"/>
-                        <!-- Torch of learning & gear -->
                         <path d="M47 38 L53 38 L52 56 L48 56 Z" fill="#f59e0b"/>
                         <circle cx="50" cy="35" r="4" fill="#ef4444"/>
                         <path d="M44 58 L56 58 L50 68 Z" fill="#f59e0b"/>
-                        <!-- Book -->
                         <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
                     </svg>
                 </div>
                 <div class="brand-titles">
                     <span class="brand-sub">Talibon Polytechnic College</span>
-                    <span class="brand-main">Student Clearance System</span>
+                    <span class="brand-main">Student Clearance Assistant</span>
                 </div>
             </a>
 
@@ -810,7 +697,7 @@
             <div class="header-actions">
                 <div class="status-pill">
                     <span class="status-dot"></span>
-                    <span id="rag-status-text">RAG Assistant Ready</span>
+                    <span>Assistant Online</span>
                 </div>
                 <a href="https://student-clearance-system-urxl.onrender.com/login" target="_blank" rel="noopener" class="portal-btn">
                     <span>Portal Login</span>
@@ -826,97 +713,69 @@
 
     <!-- Main Workspace -->
     <main>
-        <!-- Left Blueprint Column (System Context & Controls) -->
-        <div class="blueprint-panel">
-            <div class="hero-banner">
-                <div class="platform-pill">
-                    <span></span>
-                    Clearance AI Assistant
+        <!-- Left Sidebar (Help & Frequently Asked Questions) -->
+        <aside class="sidebar">
+            <div class="welcome-card">
+                <div class="welcome-title">TPC Clearance Guide</div>
+                <div class="welcome-desc">
+                    Your institutional assistant for navigating clearances, signatory approvals, resolving pending accountabilities, and securing graduation documents.
                 </div>
-                <h1 class="hero-headline">Manage student clearance with confidence and control.</h1>
-                <p class="hero-subtext">
-                    Official RAG assistant grounded exclusively on the TPC Student Handbook and Web-Based Student Clearance System manual.
-                </p>
-            </div>
-
-            <!-- Stats Bar matching the 3 stat badges in login screen -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="stat-chunks">88</div>
-                    <div class="stat-label">Indexed Chunks</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">Top-3</div>
-                    <div class="stat-label">Vector Retrieval</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">100%</div>
-                    <div class="stat-label">Grounded Context</div>
-                </div>
-            </div>
-
-            <!-- Mode Selector Cards matching the 4 Role Cards -->
-            <div class="modes-section">
-                <div class="section-label">Select Prompt Engineering Mode</div>
-                
-                <button type="button" class="mode-card active" id="btn-mode-1" onclick="selectMode(1)">
-                    <div class="mode-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                    </div>
-                    <div class="mode-text">
-                        <div class="mode-title">1. General Policy Q&A</div>
-                        <div class="mode-desc">Strict context grounding. Refuses out-of-scope with "I dont have an answer for that".</div>
-                    </div>
-                </button>
-
-                <button type="button" class="mode-card" id="btn-mode-2" onclick="selectMode(2)">
-                    <div class="mode-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 11 12 14 22 4"></polyline>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                    </div>
-                    <div class="mode-text">
-                        <div class="mode-title">2. Step-by-Step Extractor</div>
-                        <div class="mode-desc">Transforms clearance procedures into clear numbered checklists (1, 2, 3).</div>
-                    </div>
-                </button>
-
-                <button type="button" class="mode-card" id="btn-mode-3" onclick="selectMode(3)">
-                    <div class="mode-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                    </div>
-                    <div class="mode-text">
-                        <div class="mode-title">3. Document Extractor</div>
-                        <div class="mode-desc">Isolates required clearance slips, certificates, and signatory department forms.</div>
-                    </div>
+                <button type="button" class="new-chat-btn" onclick="resetChat()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>New Conversation</span>
                 </button>
             </div>
 
-            <!-- Suggested Queries for Testing -->
-            <div class="suggestions-card">
-                <div class="section-label">Evaluator Suggested Queries</div>
-                <div class="suggestions-container" id="suggestions-list">
-                    <!-- Populated dynamically -->
-                </div>
+            <div class="faq-section">
+                <div class="faq-heading">Frequently Asked Questions</div>
+
+                <button type="button" class="faq-item" onclick="askQuestion('How do I submit and complete a clearance request in the portal?')">
+                    <span class="faq-icon">🚀</span>
+                    <span>How do I submit my clearance request?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('What are all the signatory offices involved in the student clearance process?')">
+                    <span class="faq-icon">🏢</span>
+                    <span>What signatory offices must approve?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('What should I do if an office rejects my clearance request?')">
+                    <span class="faq-icon">⚠️</span>
+                    <span>What if an office rejects my clearance?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('Can I process my clearance if I still have an unpaid tuition balance?')">
+                    <span class="faq-icon">💳</span>
+                    <span>Can I clear with an unpaid balance?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('What are the rules and accountabilities for the campus Library?')">
+                    <span class="faq-icon">📚</span>
+                    <span>What are the Library accountability rules?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('How do I download and verify my final clearance certificate?')">
+                    <span class="faq-icon">📄</span>
+                    <span>How do I download my certificate?</span>
+                </button>
+
+                <button type="button" class="faq-item" onclick="askQuestion('Can I request my Transcript of Records (TOR) before clearance is finished?')">
+                    <span class="faq-icon">🎓</span>
+                    <span>Can I get my TOR while clearance is pending?</span>
+                </button>
             </div>
 
-            <div class="panel-footer">
+            <div class="sidebar-footer">
                 <span>Talibon Polytechnic College</span>
                 <span>Student Clearance System</span>
             </div>
-        </div>
+        </aside>
 
-        <!-- Right Floating White Card (Chat Interface) -->
-        <div class="chat-portal-wrapper">
+        <!-- Right Main Chat Interface -->
+        <section class="chat-portal-wrapper">
             <div class="chat-card">
                 <div class="card-top-gradient"></div>
 
@@ -928,27 +787,38 @@
                     </div>
                     <div class="portal-header-info">
                         <div class="portal-welcome">TPC Clearance Assistant</div>
-                        <div class="portal-sub">Ask any question regarding clearance procedures, signatory offices, or policies</div>
+                        <div class="portal-sub">Ask any question about clearance procedures, signatory offices, or policies</div>
                     </div>
-                    <div class="prompt-badge" id="active-prompt-badge">
-                        <span>Mode 1: General Q&A</span>
-                    </div>
+                    <button type="button" class="clear-btn" onclick="resetChat()" title="Reset conversation">
+                        Clear Chat
+                    </button>
                 </div>
 
                 <!-- Chat History Messages -->
                 <div class="chat-messages" id="chat-messages">
                     <div class="message-bubble bot-message">
                         <div class="bot-meta">
-                            <span class="bot-tag">TPC Clearance Assistant</span>
-                            <span class="bot-model-tag">MiniCAP RAG</span>
+                            <span class="bot-tag">TPC Assistant</span>
+                            <span>• Official Guide</span>
                         </div>
                         <div>
-                            Hello! I am the official <strong>Talibon Polytechnic College Clearance Assistant</strong>. You can ask me questions about clearance requirements, signatory offices, the approval sequence, or department accountabilities. Pick a suggested query on the left to test retrieval!
+                            Hello! I am your <strong>Talibon Polytechnic College Student Clearance Assistant</strong>. You can ask me anything about the student clearance workflow, required signatory offices, resolving accountabilities, or downloading your completion certificate.
+                        </div>
+                        <div class="starter-chips">
+                            <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to request clearance?')">
+                                📋 How to request clearance?
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('Who are the signatory offices?')">
+                                🏛️ Signatory offices
+                            </button>
+                            <button type="button" class="starter-chip" onclick="askQuestion('How do I download my certificate?')">
+                                📄 Download certificate
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Chat Input Form matching Login Input -->
+                <!-- Chat Input Form -->
                 <div class="chat-input-area">
                     <form class="chat-form" id="chat-form">
                         <div class="input-wrapper">
@@ -982,78 +852,52 @@
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                             <polyline points="9 12 11 14 15 10"></polyline>
                         </svg>
-                        <span>Official Clearance Portal • <strong>Secure Role-Based Grounded Access</strong></span>
+                        <span>Official Clearance Portal • <strong>Grounded Institutional Guidance</strong></span>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <script>
-        let currentPromptId = 1;
-        const promptNames = {
-            1: "Mode 1: General Q&A",
-            2: "Mode 2: Step-by-Step",
-            3: "Mode 3: Document Extractor"
-        };
-
-        const suggestionsMap = {
-            1: [
-                { text: "What are the signatory offices involved in the student clearance process?", type: "in-scope" },
-                { text: "Can TPC students apply for a tuition discount through the Foreign Aviation Flight School program?", type: "hallucination" }
-            ],
-            2: [
-                { text: "What are the steps to submit and complete a clearance request in the web-based clearance system?", type: "in-scope" },
-                { text: "What are the step-by-step procedures to apply for a student visa for studying abroad in Japan?", type: "hallucination" }
-            ],
-            3: [
-                { text: "What documents or clearance forms do students need for final clearance?", type: "in-scope" },
-                { text: "What are the behavioral rules and conduct expected inside the campus library?", type: "hallucination" }
-            ]
-        };
-
-        function applySuggestion(text) {
+        function askQuestion(text) {
             const input = document.getElementById('user-query-input');
             if (input) {
                 input.value = text;
+                handleSend();
+            }
+        }
+
+        function resetChat() {
+            const chat = document.getElementById('chat-messages');
+            if (!chat) return;
+            chat.innerHTML = `
+                <div class="message-bubble bot-message">
+                    <div class="bot-meta">
+                        <span class="bot-tag">TPC Assistant</span>
+                        <span>• Official Guide</span>
+                    </div>
+                    <div>
+                        Hello! I am your <strong>Talibon Polytechnic College Student Clearance Assistant</strong>. You can ask me anything about the student clearance workflow, required signatory offices, resolving accountabilities, or downloading your completion certificate.
+                    </div>
+                    <div class="starter-chips">
+                        <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to request clearance?')">
+                            📋 How to request clearance?
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('Who are the signatory offices?')">
+                            🏛️ Signatory offices
+                        </button>
+                        <button type="button" class="starter-chip" onclick="askQuestion('How do I download my certificate?')">
+                            📄 Download certificate
+                        </button>
+                    </div>
+                </div>
+            `;
+            const input = document.getElementById('user-query-input');
+            if (input) {
+                input.value = '';
                 input.focus();
             }
-        }
-
-        function selectMode(id) {
-            currentPromptId = id;
-            for (let i = 1; i <= 3; i++) {
-                const btn = document.getElementById('btn-mode-' + i);
-                if (btn) {
-                    if (i === id) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                }
-            }
-            const badge = document.getElementById('active-prompt-badge');
-            if (badge) {
-                badge.textContent = promptNames[id] || ("Mode " + id);
-            }
-            renderSuggestions();
-        }
-
-        function renderSuggestions() {
-            const container = document.getElementById('suggestions-list');
-            if (!container) return;
-            container.innerHTML = '';
-            const items = suggestionsMap[currentPromptId] || [];
-            items.forEach((item) => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-chip' + (item.type === 'hallucination' ? ' test-hallucination' : '');
-                const label = item.type === 'hallucination' ? '⚠ Hallucination Test' : '✓ In-Scope Query';
-                div.innerHTML = '<strong>' + escapeHtml(label) + ':</strong><br>"' + escapeHtml(item.text) + '"';
-                div.onclick = function() {
-                    applySuggestion(item.text);
-                };
-                container.appendChild(div);
-            });
         }
 
         async function handleSend(e) {
@@ -1078,7 +922,7 @@
                 const response = await fetch('/api/query', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query, prompt_id: currentPromptId })
+                    body: JSON.stringify({ query: query })
                 });
 
                 const data = await response.json();
@@ -1087,15 +931,15 @@
                 }
 
                 if (response.ok) {
-                    appendBotMessage(data.answer, data.model_used, data.retrieved_chunks);
+                    appendBotMessage(data.answer, data.retrieved_chunks);
                 } else {
-                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), 'error', []);
+                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), []);
                 }
             } catch (err) {
                 if (loadingBubble && loadingBubble.parentNode) {
                     loadingBubble.parentNode.removeChild(loadingBubble);
                 }
-                appendBotMessage('Network Error: ' + err.message, 'error', []);
+                appendBotMessage('Network Error: ' + err.message, []);
             } finally {
                 if (sendBtn) sendBtn.disabled = false;
                 input.focus();
@@ -1118,14 +962,14 @@
             if (!chat) return null;
             const div = document.createElement('div');
             div.className = 'message-bubble bot-message';
-            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Retrieving grounded context & querying LLM...</span></div>' +
+            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Searching clearance guidelines & preparing answer...</span></div>' +
                             '<div class="loading-dots"><span></span><span></span><span></span></div>';
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
             return div;
         }
 
-        function appendBotMessage(answer, model, chunks) {
+        function appendBotMessage(answer, chunks) {
             const chat = document.getElementById('chat-messages');
             if (!chat) return;
             const div = document.createElement('div');
@@ -1134,22 +978,19 @@
             let sourcesHtml = '';
             if (chunks && chunks.length > 0) {
                 const snippet = chunks.map(function(c, i) {
-                    return '[Context Chunk ' + (i + 1) + ']\n' + c.trim();
-                }).join('\n\n' + '='.repeat(40) + '\n\n');
+                    return '[Reference ' + (i + 1) + ']\n' + c.trim();
+                }).join('\n\n' + '='.repeat(35) + '\n\n');
 
                 sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
-                              '🔍 View ' + chunks.length + ' Grounded Context Sources &darr;' +
+                              '📖 View Handbook References (' + chunks.length + ') &darr;' +
                               '</button>' +
                               '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
             }
 
-            const modelDisplay = (model && model !== 'none') ? model : 'Grounded RAG';
-
             div.innerHTML = '<div class="bot-meta">' +
-                            '<span class="bot-tag">TPC Clearance Assistant</span>' +
-                            '<span class="bot-model-tag">' + escapeHtml(modelDisplay) + '</span>' +
+                            '<span class="bot-tag">TPC Assistant</span>' +
                             '</div>' +
-                            '<div>' + formatResponseText(answer || '') + '</div>' +
+                            '<div>' + formatMarkdown(answer || '') + '</div>' +
                             sourcesHtml;
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
@@ -1161,8 +1002,13 @@
             }
         }
 
-        function formatResponseText(text) {
-            return escapeHtml(text).replace(/\n/g, '<br>');
+        function formatMarkdown(text) {
+            let escaped = escapeHtml(text);
+            // Convert bold **text** to <strong>text</strong>
+            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Line breaks
+            escaped = escaped.replace(/\n/g, '<br>');
+            return escaped;
         }
 
         function escapeHtml(text) {
@@ -1171,25 +1017,7 @@
             return div.innerHTML;
         }
 
-        // Fetch health status to display live indexed chunks
-        async function fetchSystemHealth() {
-            try {
-                const res = await fetch('/health');
-                if (res.ok) {
-                    const data = await res.json();
-                    const chunkElem = document.getElementById('stat-chunks');
-                    if (chunkElem && data.indexed_chunks) {
-                        chunkElem.textContent = data.indexed_chunks;
-                    }
-                }
-            } catch (e) {
-                // Ignore silent network errors
-            }
-        }
-
         window.addEventListener('DOMContentLoaded', function() {
-            renderSuggestions();
-            fetchSystemHealth();
             const form = document.getElementById('chat-form');
             if (form) {
                 form.addEventListener('submit', handleSend);
