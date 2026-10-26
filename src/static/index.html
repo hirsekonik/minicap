@@ -3,28 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TPC Automated Clearance Assistant | MiniCAP RAG</title>
-    <meta name="description" content="Official TPC Automated Clearance & Academic Policy RAG Assistant. Powered by ChromaDB and Gemini LLM.">
+    <title>Talibon Polytechnic College | Student Clearance System Assistant</title>
+    <meta name="description" content="Official AI Assistant for Talibon Polytechnic College Student Clearance System. Grounded on TPC Student Handbook & Clearance System Documentation.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #111827;
-            --bg-card: rgba(17, 24, 39, 0.75);
-            --bg-hover: #1f293d;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(99, 102, 241, 0.5);
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.25);
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --accent-green: #10b981;
-            --accent-yellow: #f59e0b;
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            /* TPC Theme Tokens matching student-clearance-system-urxl.onrender.com */
+            --tpc-blue-dark: #081a48;
+            --tpc-blue-deep: #0f2e8a;
+            --tpc-blue-primary: #1d4ed8;
+            --tpc-blue-vibrant: #2563eb;
+            --tpc-blue-light: #3b82f6;
+            --tpc-cyan: #06b6d4;
+            --tpc-purple: #8b5cf6;
+            --tpc-gold: #f59e0b;
+            --tpc-green: #10b981;
+            
+            --bg-blueprint: #0d276b;
+            --border-blueprint: rgba(255, 255, 255, 0.12);
+            --border-blueprint-active: rgba(147, 197, 253, 0.5);
+            
+            --card-white: #ffffff;
+            --card-bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-slate: #334155;
+            --text-muted: #64748b;
+            --text-light: #f8fafc;
+            --text-light-muted: rgba(255, 255, 255, 0.75);
+            
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06);
+            --shadow-primary: 0 4px 14px rgba(37, 99, 235, 0.35);
         }
 
         * {
@@ -36,95 +47,141 @@
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: #0b1e52;
+            color: var(--text-dark);
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
         }
 
+        /* --- Global Blueprint Grid Background --- */
+        .blueprint-bg {
+            background-color: #0d276b;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 38px 38px;
+            background-position: -1px -1px;
+        }
+
+        /* --- Header matching TPC Portal --- */
         header {
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(10, 14, 23, 0.85);
-            backdrop-filter: blur(16px);
+            background: rgba(11, 30, 82, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-blueprint);
             position: sticky;
             top: 0;
-            z-index: 50;
-            padding: 1rem 1.5rem;
+            z-index: 100;
+            padding: 0.85rem 1.75rem;
         }
 
-        .header-container {
-            max-width: 1200px;
+        .header-content {
+            max-width: 1440px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .brand-badge {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.45rem 0.9rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .brand-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--primary-gradient);
+        .tpc-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 14px var(--primary-glow);
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: white;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .brand-title h1 {
-            font-size: 1.15rem;
+        .tpc-logo svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .brand-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-sub {
+            font-size: 0.65rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        .brand-title p {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
+        .brand-main {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .header-center-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #bfdbfe;
+        }
+
+        .header-center-pill .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--tpc-cyan);
+            box-shadow: 0 0 8px var(--tpc-cyan);
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
         }
 
         .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.35rem 0.75rem;
+            padding: 0.4rem 0.85rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
         .status-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background-color: var(--accent-green);
-            box-shadow: 0 0 8px var(--accent-green);
+            background-color: var(--tpc-green);
+            box-shadow: 0 0 8px var(--tpc-green);
             animation: pulse 2s infinite;
         }
 
@@ -133,148 +190,363 @@
             50% { opacity: 0.4; transform: scale(0.9); }
         }
 
-        .api-link {
+        .portal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
             text-decoration: none;
-            padding: 0.35rem 0.85rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 0.78rem;
             font-weight: 600;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
+            padding: 0.45rem 0.95rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.2s ease;
         }
 
-        .api-link:hover {
-            color: var(--text-primary);
-            border-color: var(--primary);
-            background: var(--bg-hover);
+        .portal-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
         }
 
+        /* --- Main Dual-Panel Layout --- */
         main {
             flex: 1;
-            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            max-width: 1440px;
             width: 100%;
             margin: 0 auto;
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 1.5rem;
+            padding: 1.5rem 1.75rem 2rem;
+            gap: 1.75rem;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1080px) {
             main {
                 grid-template-columns: 1fr;
             }
         }
 
-        .sidebar {
+        /* --- Left Blueprint Column (System Context & Controls) --- */
+        .blueprint-panel {
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1.5rem;
+            color: #ffffff;
         }
 
-        .glass-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.25rem;
-            backdrop-filter: blur(12px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .section-heading {
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
+        .hero-banner {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
-        .mode-button {
-            width: 100%;
-            background: transparent;
-            border: 1px solid var(--border-color);
+        .platform-pill {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #93c5fd;
+        }
+
+        .platform-pill span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--tpc-cyan);
+            box-shadow: 0 0 6px var(--tpc-cyan);
+        }
+
+        .hero-headline {
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.18;
+            letter-spacing: -0.025em;
+            color: #ffffff;
+        }
+
+        .hero-subtext {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.55;
+            font-weight: 400;
+        }
+
+        /* Stat Pills Grid matching the login screen */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 12px;
             padding: 0.85rem;
-            text-align: left;
+            backdrop-filter: blur(8px);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #93c5fd;
+        }
+
+        /* Mode Selector Cards styled like the 4 Role Cards */
+        .modes-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            margin-bottom: 0.2rem;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 0.6rem;
-            display: block;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(10px);
+            text-align: left;
+            width: 100%;
         }
 
-        .mode-button:hover {
-            background: var(--bg-hover);
-            border-color: rgba(255, 255, 255, 0.2);
+        .mode-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(3px);
         }
 
-        .mode-button.active {
-            background: rgba(99, 102, 241, 0.12);
-            border-color: var(--border-active);
-            box-shadow: 0 0 16px rgba(99, 102, 241, 0.15);
+        .mode-card.active {
+            background: rgba(37, 99, 235, 0.35);
+            border-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
+        }
+
+        .mode-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .mode-card.active .mode-icon {
+            background: var(--tpc-blue-vibrant);
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+        }
+
+        .mode-text {
+            flex: 1;
         }
 
         .mode-title {
             font-size: 0.88rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #ffffff;
             margin-bottom: 0.2rem;
         }
 
         .mode-desc {
             font-size: 0.74rem;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.4;
         }
 
-        .suggestion-group {
+        /* Suggestions Box */
+        .suggestions-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .suggestions-container {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            margin-top: 0.5rem;
+            margin-top: 0.6rem;
         }
 
         .suggestion-chip {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: rgba(11, 25, 68, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 10px;
             padding: 0.65rem 0.85rem;
-            font-size: 0.78rem;
-            color: var(--text-secondary);
+            font-size: 0.76rem;
+            color: #e2e8f0;
             cursor: pointer;
             transition: all 0.2s;
             text-align: left;
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .suggestion-chip:hover {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-            border-color: var(--primary);
+            background: rgba(30, 58, 138, 0.8);
+            border-color: #60a5fa;
             transform: translateX(2px);
+            color: #ffffff;
         }
 
         .suggestion-chip.test-hallucination {
-            border-left: 3px solid var(--accent-yellow);
+            border-left: 3px solid var(--tpc-gold);
         }
 
-        .chat-container {
+        .suggestion-chip strong {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .suggestion-chip.test-hallucination strong {
+            color: var(--tpc-gold);
+        }
+
+        .suggestion-chip:not(.test-hallucination) strong {
+            color: #93c5fd;
+        }
+
+        .panel-footer {
+            margin-top: auto;
+            padding-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- Right Floating White Card (Chat Interface) --- */
+        .chat-portal-wrapper {
+            background: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 22px 22px;
+            border-radius: 24px;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
-            box-shadow: var(--shadow-lg);
-            height: calc(100vh - 120px);
-            min-height: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+        }
+
+        .chat-card {
+            background: var(--card-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 150px);
+            min-height: 600px;
+            position: relative;
             overflow: hidden;
         }
 
+        /* Signature Top Gradient Bar from Login Screen */
+        .card-top-gradient {
+            height: 5px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--tpc-cyan) 0%, var(--tpc-blue-vibrant) 50%, var(--tpc-purple) 100%);
+            flex-shrink: 0;
+        }
+
+        .chat-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #ffffff;
+        }
+
+        .portal-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .portal-header-info {
+            flex: 1;
+        }
+
+        .portal-welcome {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.015em;
+        }
+
+        .portal-sub {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .prompt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: var(--tpc-blue-primary);
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: 1px solid #dbeafe;
+        }
+
+        /* Messages Area */
         .chat-messages {
             flex: 1;
             padding: 1.5rem;
@@ -282,30 +554,33 @@
             display: flex;
             flex-direction: column;
             gap: 1.25rem;
+            background: #f8fafc;
         }
 
         .message-bubble {
-            max-width: 85%;
+            max-width: 82%;
             padding: 1rem 1.25rem;
             border-radius: 16px;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             line-height: 1.6;
+            word-wrap: break-word;
         }
 
         .user-message {
             align-self: flex-end;
-            background: var(--primary-gradient);
-            color: white;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: #ffffff;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 14px var(--primary-glow);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .bot-message {
             align-self: flex-start;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: var(--text-slate);
             border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
         }
 
         .bot-meta {
@@ -317,196 +592,411 @@
             color: var(--text-muted);
         }
 
-        .bot-model-tag {
-            background: rgba(99, 102, 241, 0.15);
-            color: #a5b4fc;
-            padding: 0.15rem 0.45rem;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
+        .bot-meta .bot-tag {
+            font-weight: 700;
+            color: var(--tpc-blue-primary);
         }
 
+        .bot-model-tag {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 600;
+            border: 1px solid #dbeafe;
+        }
+
+        /* Grounded Context Sources Drawer */
         .sources-toggle {
             margin-top: 0.75rem;
-            background: transparent;
-            border: none;
-            color: #818cf8;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: var(--tpc-blue-primary);
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sources-toggle:hover {
+            background: #e2e8f0;
+            color: #1e3a8a;
         }
 
         .sources-drawer {
             margin-top: 0.6rem;
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border-left: 3px solid var(--primary);
+            padding: 0.85rem;
+            background: #0f172a;
+            border-radius: 10px;
+            border-left: 3px solid var(--tpc-blue-vibrant);
             display: none;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 0.74rem;
+            color: #cbd5e1;
             font-family: 'JetBrains Mono', monospace;
             white-space: pre-wrap;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
+            line-height: 1.5;
         }
 
         .sources-drawer.open {
             display: block;
         }
 
-        .chat-input-area {
-            border-top: 1px solid var(--border-color);
-            padding: 1rem 1.25rem;
-            background: rgba(17, 24, 39, 0.95);
-        }
-
-        .chat-form {
+        /* Loading Dots Indicator */
+        .loading-dots {
             display: flex;
-            gap: 0.75rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0.85rem 1.15rem;
-            color: var(--text-primary);
-            font-size: 0.92rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .chat-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .send-button {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 0 1.5rem;
-            color: white;
-            font-weight: 600;
-            font-size: 0.92rem;
-            cursor: pointer;
-            box-shadow: 0 4px 14px var(--primary-glow);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .send-button:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 18px var(--primary-glow);
-        }
-
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            gap: 5px;
+            padding: 8px 0;
         }
 
         .loading-dots span {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            margin: 0 2px;
-            background: #a5b4fc;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
+            background-color: var(--tpc-blue-vibrant);
             animation: bounce 1.4s infinite ease-in-out both;
         }
+
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
 
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* Input Area matching Login Screen Form */
+        .chat-input-area {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.15rem 1.5rem 1.25rem;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 0.85rem 1rem 0.85rem 2.75rem;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--tpc-blue-vibrant);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .chat-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.85rem 1.5rem;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Footer Security Pill matching Login Screen */
+        .security-footer {
+            margin-top: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .security-footer svg {
+            color: var(--tpc-green);
+        }
+
+        .security-footer strong {
+            color: #334155;
         }
     </style>
 </head>
-<body>
+<body class="blueprint-bg">
+
+    <!-- Header Navigation -->
     <header>
-        <div class="header-container">
-            <div class="brand-badge">
-                <div class="brand-logo">T</div>
-                <div class="brand-title">
-                    <h1>TPC Automated Clearance Assistant</h1>
-                    <p>MiniCAP Grounded RAG &bull; Student Handbook & Clearance Manual</p>
+        <div class="header-content">
+            <a href="https://student-clearance-system-urxl.onrender.com" target="_blank" rel="noopener" class="brand-badge" title="Go to TPC Clearance Portal">
+                <div class="tpc-logo">
+                    <!-- TPC College Crest Emblem SVG -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
+                        <!-- Shield -->
+                        <path d="M50 20 L72 32 V54 C72 68 50 80 50 80 C50 80 28 68 28 54 V32 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+                        <!-- Inner blue shield -->
+                        <path d="M50 24 L68 34 V52 C68 64 50 74 50 74 C50 74 32 64 32 52 V34 Z" fill="#1e40af"/>
+                        <!-- Torch of learning & gear -->
+                        <path d="M47 38 L53 38 L52 56 L48 56 Z" fill="#f59e0b"/>
+                        <circle cx="50" cy="35" r="4" fill="#ef4444"/>
+                        <path d="M44 58 L56 58 L50 68 Z" fill="#f59e0b"/>
+                        <!-- Book -->
+                        <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
+                    </svg>
                 </div>
+                <div class="brand-titles">
+                    <span class="brand-sub">Talibon Polytechnic College</span>
+                    <span class="brand-main">Student Clearance System</span>
+                </div>
+            </a>
+
+            <div class="header-center-pill">
+                <span class="dot"></span>
+                <span>Role-Based Clearance Platform</span>
             </div>
+
             <div class="header-actions">
-                <span class="status-pill" id="health-status">
+                <div class="status-pill">
                     <span class="status-dot"></span>
-                    <span id="health-text">Online &bull; ChromaDB Ready</span>
-                </span>
-                <a href="/docs" target="_blank" class="api-link" id="swagger-link">REST API Docs</a>
+                    <span id="rag-status-text">RAG Assistant Ready</span>
+                </div>
+                <a href="https://student-clearance-system-urxl.onrender.com/login" target="_blank" rel="noopener" class="portal-btn">
+                    <span>Portal Login</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
             </div>
         </div>
     </header>
 
+    <!-- Main Workspace -->
     <main>
-        <div class="sidebar">
-            <div class="glass-card">
-                <div class="section-heading">Select Prompt Mode</div>
-                <button type="button" class="mode-button active" id="btn-mode-1" onclick="selectMode(1)">
-                    <div class="mode-title">1. General Policy Q&A</div>
-                    <div class="mode-desc">Strict context grounding. Refuses with "I dont have an answer for that".</div>
+        <!-- Left Blueprint Column (System Context & Controls) -->
+        <div class="blueprint-panel">
+            <div class="hero-banner">
+                <div class="platform-pill">
+                    <span></span>
+                    Clearance AI Assistant
+                </div>
+                <h1 class="hero-headline">Manage student clearance with confidence and control.</h1>
+                <p class="hero-subtext">
+                    Official RAG assistant grounded exclusively on the TPC Student Handbook and Web-Based Student Clearance System manual.
+                </p>
+            </div>
+
+            <!-- Stats Bar matching the 3 stat badges in login screen -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-chunks">88</div>
+                    <div class="stat-label">Indexed Chunks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">Top-3</div>
+                    <div class="stat-label">Vector Retrieval</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Grounded Context</div>
+                </div>
+            </div>
+
+            <!-- Mode Selector Cards matching the 4 Role Cards -->
+            <div class="modes-section">
+                <div class="section-label">Select Prompt Engineering Mode</div>
+                
+                <button type="button" class="mode-card active" id="btn-mode-1" onclick="selectMode(1)">
+                    <div class="mode-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="mode-text">
+                        <div class="mode-title">1. General Policy Q&A</div>
+                        <div class="mode-desc">Strict context grounding. Refuses out-of-scope with "I dont have an answer for that".</div>
+                    </div>
                 </button>
-                <button type="button" class="mode-button" id="btn-mode-2" onclick="selectMode(2)">
-                    <div class="mode-title">2. Step-by-Step Extractor</div>
-                    <div class="mode-desc">Extracts actionable procedures into numbered checklists (1, 2, 3).</div>
+
+                <button type="button" class="mode-card" id="btn-mode-2" onclick="selectMode(2)">
+                    <div class="mode-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="mode-text">
+                        <div class="mode-title">2. Step-by-Step Extractor</div>
+                        <div class="mode-desc">Transforms clearance procedures into clear numbered checklists (1, 2, 3).</div>
+                    </div>
                 </button>
-                <button type="button" class="mode-button" id="btn-mode-3" onclick="selectMode(3)">
-                    <div class="mode-title">3. Document Extractor</div>
-                    <div class="mode-desc">Isolates only required slips, forms, and documents into a bulleted list.</div>
+
+                <button type="button" class="mode-card" id="btn-mode-3" onclick="selectMode(3)">
+                    <div class="mode-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div class="mode-text">
+                        <div class="mode-title">3. Document Extractor</div>
+                        <div class="mode-desc">Isolates required clearance slips, certificates, and signatory department forms.</div>
+                    </div>
                 </button>
             </div>
 
-            <div class="glass-card">
-                <div class="section-heading">Evaluator Suggested Queries</div>
-                <div class="suggestion-group" id="suggestions-list">
-                    <!-- Populated dynamically via JavaScript -->
+            <!-- Suggested Queries for Testing -->
+            <div class="suggestions-card">
+                <div class="section-label">Evaluator Suggested Queries</div>
+                <div class="suggestions-container" id="suggestions-list">
+                    <!-- Populated dynamically -->
                 </div>
+            </div>
+
+            <div class="panel-footer">
+                <span>Talibon Polytechnic College</span>
+                <span>Student Clearance System</span>
             </div>
         </div>
 
-        <div class="chat-container">
-            <div class="chat-messages" id="chat-messages">
-                <div class="message-bubble bot-message">
-                    <div class="bot-meta">
-                        <span>TPC Assistant</span>
-                        <span class="bot-model-tag">MiniCAP RAG</span>
-                    </div>
-                    Hello! I am the TPC Automated Clearance & Academic Policy Assistant. Ask any question regarding the TPC Student Handbook or Web-Based Clearance System, or pick a sample question on the left to test retrieval and hallucination prevention!
-                </div>
-            </div>
+        <!-- Right Floating White Card (Chat Interface) -->
+        <div class="chat-portal-wrapper">
+            <div class="chat-card">
+                <div class="card-top-gradient"></div>
 
-            <div class="chat-input-area">
-                <form class="chat-form" id="chat-form">
-                    <input 
-                        type="text" 
-                        class="chat-input" 
-                        id="user-query-input" 
-                        placeholder="Ask about clearance steps, signatory offices, or policies..." 
-                        autocomplete="off"
-                        required
-                    />
-                    <button type="submit" class="send-button" id="send-button">
-                        <span>Send</span>
-                    </button>
-                </form>
+                <div class="chat-card-header">
+                    <div class="portal-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="portal-header-info">
+                        <div class="portal-welcome">TPC Clearance Assistant</div>
+                        <div class="portal-sub">Ask any question regarding clearance procedures, signatory offices, or policies</div>
+                    </div>
+                    <div class="prompt-badge" id="active-prompt-badge">
+                        <span>Mode 1: General Q&A</span>
+                    </div>
+                </div>
+
+                <!-- Chat History Messages -->
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message-bubble bot-message">
+                        <div class="bot-meta">
+                            <span class="bot-tag">TPC Clearance Assistant</span>
+                            <span class="bot-model-tag">MiniCAP RAG</span>
+                        </div>
+                        <div>
+                            Hello! I am the official <strong>Talibon Polytechnic College Clearance Assistant</strong>. You can ask me questions about clearance requirements, signatory offices, the approval sequence, or department accountabilities. Pick a suggested query on the left to test retrieval!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form matching Login Input -->
+                <div class="chat-input-area">
+                    <form class="chat-form" id="chat-form">
+                        <div class="input-wrapper">
+                            <div class="input-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </div>
+                            <input 
+                                type="text" 
+                                class="chat-input" 
+                                id="user-query-input" 
+                                placeholder="Ask about clearance steps, signatory offices, or policies..." 
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="send-button" id="send-button">
+                            <span>Send</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Official Security Tag -->
+                    <div class="security-footer">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                        <span>Official Clearance Portal • <strong>Secure Role-Based Grounded Access</strong></span>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
         let currentPromptId = 1;
+        const promptNames = {
+            1: "Mode 1: General Q&A",
+            2: "Mode 2: Step-by-Step",
+            3: "Mode 3: Document Extractor"
+        };
+
         const suggestionsMap = {
             1: [
                 { text: "What are the signatory offices involved in the student clearance process?", type: "in-scope" },
@@ -542,6 +1032,10 @@
                     }
                 }
             }
+            const badge = document.getElementById('active-prompt-badge');
+            if (badge) {
+                badge.textContent = promptNames[id] || ("Mode " + id);
+            }
             renderSuggestions();
         }
 
@@ -553,7 +1047,7 @@
             items.forEach((item) => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-chip' + (item.type === 'hallucination' ? ' test-hallucination' : '');
-                const label = item.type === 'hallucination' ? 'Warning: Hallucination Test' : 'In-Scope Query';
+                const label = item.type === 'hallucination' ? '⚠ Hallucination Test' : '✓ In-Scope Query';
                 div.innerHTML = '<strong>' + escapeHtml(label) + ':</strong><br>"' + escapeHtml(item.text) + '"';
                 div.onclick = function() {
                     applySuggestion(item.text);
@@ -624,7 +1118,7 @@
             if (!chat) return null;
             const div = document.createElement('div');
             div.className = 'message-bubble bot-message';
-            div.innerHTML = '<div class="bot-meta"><span>Retrieving context & querying LLM...</span></div>' +
+            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Retrieving grounded context & querying LLM...</span></div>' +
                             '<div class="loading-dots"><span></span><span></span><span></span></div>';
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
@@ -640,18 +1134,20 @@
             let sourcesHtml = '';
             if (chunks && chunks.length > 0) {
                 const snippet = chunks.map(function(c, i) {
-                    return '[Chunk ' + (i + 1) + ']\n' + c.trim();
-                }).join('\n\n---\n\n');
+                    return '[Context Chunk ' + (i + 1) + ']\n' + c.trim();
+                }).join('\n\n' + '='.repeat(40) + '\n\n');
 
                 sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
-                              '🔍 View ' + chunks.length + ' Grounded Context Chunks &darr;' +
+                              '🔍 View ' + chunks.length + ' Grounded Context Sources &darr;' +
                               '</button>' +
                               '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
             }
 
+            const modelDisplay = (model && model !== 'none') ? model : 'Grounded RAG';
+
             div.innerHTML = '<div class="bot-meta">' +
-                            '<span>TPC Assistant</span>' +
-                            '<span class="bot-model-tag">' + escapeHtml(model || 'Grounded') + '</span>' +
+                            '<span class="bot-tag">TPC Clearance Assistant</span>' +
+                            '<span class="bot-model-tag">' + escapeHtml(modelDisplay) + '</span>' +
                             '</div>' +
                             '<div>' + formatResponseText(answer || '') + '</div>' +
                             sourcesHtml;
@@ -675,8 +1171,25 @@
             return div.innerHTML;
         }
 
+        // Fetch health status to display live indexed chunks
+        async function fetchSystemHealth() {
+            try {
+                const res = await fetch('/health');
+                if (res.ok) {
+                    const data = await res.json();
+                    const chunkElem = document.getElementById('stat-chunks');
+                    if (chunkElem && data.indexed_chunks) {
+                        chunkElem.textContent = data.indexed_chunks;
+                    }
+                }
+            } catch (e) {
+                // Ignore silent network errors
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', function() {
             renderSuggestions();
+            fetchSystemHealth();
             const form = document.getElementById('chat-form');
             if (form) {
                 form.addEventListener('submit', handleSend);

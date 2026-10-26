@@ -36,31 +36,49 @@ except ImportError:
 try:
     from sentence_transformers import SentenceTransformer
 except Exception:
-    import torch
-    import torch.nn.functional as F
-    from transformers import AutoTokenizer, AutoModel
+    try:
+        import torch
+        import torch.nn.functional as F
+        from transformers import AutoTokenizer, AutoModel
 
-    class SentenceTransformer:
-        def __init__(self, model_name='sentence-transformers/all-MiniLM-L6-v2'):
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-            self.model = AutoModel.from_pretrained(model_name)
-            self.model.eval()
+        class SentenceTransformer:
+            def __init__(self, model_name='sentence-transformers/all-MiniLM-L6-v2'):
+                self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+                self.model = AutoModel.from_pretrained(model_name)
+                self.model.eval()
 
-        def encode(self, sentences, **kwargs):
-            is_single = isinstance(sentences, str)
-            if is_single:
-                sentences = [sentences]
-            encoded = self.tokenizer(sentences, padding=True, truncation=True, return_tensors='pt', max_length=512)
-            with torch.no_grad():
-                out = self.model(**encoded)
-                token_embeddings = out[0]
-                attention_mask = encoded['attention_mask'].unsqueeze(-1).expand(token_embeddings.size()).float()
-                sum_embeddings = torch.sum(token_embeddings * attention_mask, 1)
-                sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
-                embeddings = sum_embeddings / sum_mask
-                embeddings = F.normalize(embeddings, p=2, dim=1)
-            res = embeddings.cpu().numpy()
-            return res[0] if is_single else res
+            def encode(self, sentences, **kwargs):
+                is_single = isinstance(sentences, str)
+                if is_single:
+                    sentences = [sentences]
+                encoded = self.tokenizer(sentences, padding=True, truncation=True, return_tensors='pt', max_length=512)
+                with torch.no_grad():
+                    out = self.model(**encoded)
+                    token_embeddings = out[0]
+                    attention_mask = encoded['attention_mask'].unsqueeze(-1).expand(token_embeddings.size()).float()
+                    sum_embeddings = torch.sum(token_embeddings * attention_mask, 1)
+                    sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
+                    embeddings = sum_embeddings / sum_mask
+                    embeddings = F.normalize(embeddings, p=2, dim=1)
+                res = embeddings.cpu().numpy()
+                return res[0] if is_single else res
+    except Exception:
+        # Fallback to ONNX Runtime via ChromaDB ONNXMiniLM
+        # (Zero PyTorch dependency, bypasses Windows Defender / WDAC WinError 4551 blocking)
+        import chromadb.utils.embedding_functions as ef
+        import numpy as np
+
+        class SentenceTransformer:
+            def __init__(self, model_name='sentence-transformers/all-MiniLM-L6-v2'):
+                self.model_name = model_name
+                self._ef = ef.ONNXMiniLM_L6_V2()
+
+            def encode(self, sentences, **kwargs):
+                is_single = isinstance(sentences, str)
+                inp = [sentences] if is_single else list(sentences)
+                embeddings = self._ef(inp)
+                arr = np.array(embeddings, dtype=np.float32)
+                return arr[0] if is_single else arr
 
 
 def read_pdf(file_path: str) -> str:

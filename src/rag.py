@@ -123,16 +123,21 @@ def setup_chromadb(chunks=None):
 
 def get_gemini_api_key():
     """Retrieves the Gemini API key supporting any variable name or casing variation."""
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_path = os.path.join(base_dir, '.env')
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+
     for key_name in ["GEMINI_API_KEY", "API_KEY", "API KEY", "APIKey", "GOOGLE_API_KEY", "api_key", "apikey", "Api_Key"]:
         val = os.environ.get(key_name)
         if val and val.strip():
-            return val.strip()
+            return val.strip().strip('"').strip("'")
 
     for k, v in os.environ.items():
         clean_k = k.replace("_", "").replace(" ", "").replace("-", "").lower()
         if clean_k in ["apikey", "geminiapikey", "googleapikey", "geminikey", "googlekey"]:
             if v and v.strip():
-                return v.strip()
+                return v.strip().strip('"').strip("'")
     return None
 
 
@@ -153,7 +158,7 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
 
     if not api_key:
         return {
-            "answer": "Gemini API key is not configured. Please add GEMINI_API_KEY or API_KEY to your environment variables on Railway.",
+            "answer": "Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file or environment variables.",
             "retrieved_chunks": retrieved_docs,
             "model_used": "none",
             "error": "missing_api_key"
@@ -161,7 +166,7 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
 
     # 2. Call Gemini LLM with context grounding
     user_prompt = f"Context:\n{retrieved_context}\n\nQuestion: {query}"
-    candidate_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-lite', 'gemini-3.5-flash']
+    candidate_models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro']
 
     client = genai.Client(api_key=api_key)
     last_err = None
@@ -176,18 +181,24 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
                     temperature=0.0
                 )
             )
+            answer_text = (response.text or "").strip()
+            if not answer_text and response.candidates and len(response.candidates) > 0:
+                candidate = response.candidates[0]
+                if candidate.content and candidate.content.parts:
+                    answer_text = "".join([p.text for p in candidate.content.parts if hasattr(p, 'text') and p.text]).strip()
+
+            if not answer_text:
+                answer_text = "I dont have an answer for that."
+
             return {
-                "answer": response.text.strip(),
+                "answer": answer_text,
                 "retrieved_chunks": retrieved_docs,
                 "model_used": model_name,
                 "error": None
             }
         except Exception as e:
             last_err = str(e)
-            if "429" in last_err or "RESOURCE_EXHAUSTED" in last_err or "404" in last_err or "NOT_FOUND" in last_err:
-                continue
-            else:
-                break
+            continue
 
     return {
         "answer": f"Unable to complete query due to API error: {last_err or 'quota limit reached'}",

@@ -61,7 +61,8 @@ def main():
         start_forwarder(from_port=8080, to_port=8000)
 
     print(f"[MiniCAP] Launching Uvicorn on 0.0.0.0:{active_port}...", flush=True)
-    os.execvp("uvicorn", ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", str(active_port)])
+    import uvicorn
+    uvicorn.run("src.app:app", host="0.0.0.0", port=active_port)
 
 
 if __name__ == "__main__":

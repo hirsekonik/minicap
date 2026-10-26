@@ -6,6 +6,16 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from dotenv import load_dotenv
+
+# Explicitly load .env from project root
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_path = os.path.join(base_dir, '.env')
+if os.path.exists(env_path):
+    load_dotenv(env_path)
+else:
+    load_dotenv()
+
 # Safe imports for internal modules
 try:
     from src.rag import setup_chromadb, query_rag_engine, PROMPTS, get_gemini_api_key
