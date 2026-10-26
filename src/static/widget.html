@@ -6,7 +6,8 @@
     <title>TPC Student Clearance Assistant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             /* Matched to TPC Student Clearance Portal theme */
@@ -237,7 +238,7 @@
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 0.9rem;
+            gap: 1rem;
             background: var(--bg-chat);
         }
 
@@ -260,11 +261,11 @@
         }
 
         .message-bubble {
-            max-width: 86%;
-            padding: 0.85rem 1.05rem;
-            border-radius: 16px;
+            max-width: 90%;
+            padding: 0.95rem 1.15rem;
+            border-radius: 18px;
             font-size: 0.88rem;
-            line-height: 1.55;
+            line-height: 1.6;
             word-wrap: break-word;
             position: relative;
             animation: messagePop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -282,6 +283,7 @@
             color: #ffffff;
             border-bottom-right-radius: 4px;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+            font-weight: 500;
         }
 
         /* Bot Message: Crisp White Card with subtle border */
@@ -297,11 +299,17 @@
         .bot-meta {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
-            margin-bottom: 0.4rem;
+            justify-content: space-between;
+            margin-bottom: 0.55rem;
             font-size: 0.68rem;
             color: var(--text-muted);
             font-weight: 600;
+        }
+
+        .bot-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .bot-meta .bot-tag {
@@ -309,11 +317,177 @@
             font-weight: 700;
             background: var(--tpc-primary-subtle);
             border: 1px solid var(--tpc-primary-border);
-            padding: 0.1rem 0.45rem;
-            border-radius: 4px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            letter-spacing: 0.02em;
         }
 
-        /* Quick Starters Carousel matching the student portal pills */
+        /* --- Rich Markdown Typography inside Bot Message --- */
+        .bot-text-content {
+            color: var(--text-slate);
+            font-size: 0.88rem;
+            line-height: 1.65;
+            word-break: break-word;
+        }
+
+        .bot-text-content h3, .bot-text-content h4 {
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0.85rem 0 0.35rem 0;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .bot-text-content h3:first-child, .bot-text-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .bot-text-content p {
+            margin-bottom: 0.65rem;
+        }
+
+        .bot-text-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .bot-text-content ul, .bot-text-content ol {
+            margin: 0.45rem 0 0.75rem 1.25rem;
+            padding-left: 0.25rem;
+        }
+
+        .bot-text-content li {
+            margin-bottom: 0.4rem;
+            line-height: 1.55;
+        }
+
+        .bot-text-content li strong {
+            color: #0f172a;
+        }
+
+        .bot-text-content li::marker {
+            color: var(--tpc-primary);
+            font-weight: 700;
+        }
+
+        .bot-text-content strong {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .bot-text-content blockquote {
+            background: #eff6ff;
+            border-left: 3.5px solid var(--tpc-primary);
+            padding: 0.65rem 0.95rem;
+            border-radius: 8px;
+            margin: 0.75rem 0;
+            font-size: 0.84rem;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .bot-text-content code {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: var(--tpc-primary);
+        }
+
+        .bot-text-content a {
+            color: var(--tpc-primary);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        /* Streaming Typing Cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 2.5px;
+            height: 1.1em;
+            vertical-align: -2px;
+            background-color: var(--tpc-primary);
+            animation: cursorBlink 0.7s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Message Action Bar (Copy, Speak, Timestamp) */
+        .message-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.4rem;
+            margin-top: 0.65rem;
+            padding-top: 0.45rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .msg-action-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+
+        .msg-action-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .msg-action-btn.copied {
+            color: var(--tpc-green);
+        }
+
+        /* Dynamic Follow-up Suggestions Chips */
+        .dynamic-followups {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.65rem;
+            animation: messagePop 0.25s ease;
+        }
+
+        .followup-chip {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.73rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            user-select: none;
+        }
+
+        .followup-chip:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--tpc-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Starter Chips Grid on Welcome */
         .starter-chips-wrap {
             margin-top: 0.85rem;
             display: flex;
@@ -397,11 +571,12 @@
             display: block;
         }
 
-        /* Typing indicator */
+        /* Modern Loading Dots Animation */
         .loading-dots {
             display: flex;
-            gap: 4px;
-            padding: 6px 4px;
+            gap: 5px;
+            padding: 8px 4px;
+            align-items: center;
         }
 
         .loading-dots span {
@@ -409,15 +584,15 @@
             height: 7px;
             border-radius: 50%;
             background-color: var(--tpc-primary);
-            animation: bounce 1.4s infinite ease-in-out both;
+            animation: modernBounce 1.4s infinite ease-in-out both;
         }
 
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
+        @keyframes modernBounce {
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.4; }
+            40% { transform: scale(1.0); opacity: 1; }
         }
 
         /* Input Area */
@@ -638,7 +813,7 @@
                 </div>
             </div>
 
-            <!-- Action buttons matching Messenger: Directory, Reset, Minimize, Close -->
+            <!-- Action buttons: Directory, Reset, Minimize, Close -->
             <div class="header-actions">
                 <button type="button" class="header-btn" onclick="toggleDirectory()" title="Signatory Office Directory">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -671,15 +846,18 @@
 
             <div class="message-bubble bot-message">
                 <div class="bot-meta">
-                    <span class="bot-tag">TPC Assistant</span>
-                    <span>Student Clearance AI</span>
+                    <div class="bot-meta-left">
+                        <span class="bot-tag">TPC Assistant</span>
+                        <span>Clearance Concierge</span>
+                    </div>
                 </div>
-                <div>
-                    Hello! I'm your official <strong>TPC Clearance Assistant</strong>. Ask me anything about clearance requirements, signatory offices, status rejections, or policies:
+                <div class="bot-text-content">
+                    <p>Hello! I'm your official <strong>TPC Clearance Assistant</strong>, trained on the Talibon Polytechnic College Student Handbook and online clearance procedures.</p>
+                    <p>How can I assist your clearance journey today? Tap a quick topic or ask any specific question:</p>
                 </div>
                 
                 <div class="starter-chips-wrap">
-                    <div class="chips-label">Frequently Asked</div>
+                    <div class="chips-label">Popular Topics</div>
                     <div class="starter-chips">
                         <button type="button" class="starter-chip" onclick="askQuestion('What are the steps to submit clearance?')">
                             🚀 How to submit clearance?
@@ -715,7 +893,7 @@
                         type="text" 
                         class="chat-input" 
                         id="user-query-input" 
-                        placeholder="Ask about clearance steps, offices, or policies..." 
+                        placeholder="Ask about steps, signatory offices, holds, or policies..." 
                         autocomplete="off"
                         required
                     />
@@ -745,11 +923,13 @@
                 </h4>
                 <p>Standard sequence of clearance offices for Talibon Polytechnic College:</p>
                 <ul class="directory-list">
-                    <li><span>1. Department Dean / Chair</span><strong>Academic</strong></li>
-                    <li><span>2. College Library</span><strong>Books / Overdues</strong></li>
+                    <li><span>1. Department Dean / Chair</span><strong>Academic Verification</strong></li>
+                    <li><span>2. College Library</span><strong>Books &amp; Fines</strong></li>
                     <li><span>3. Student Affairs (OSAS)</span><strong>Conduct &amp; Orgs</strong></li>
-                    <li><span>4. Accounting Office</span><strong>Financial Dues</strong></li>
-                    <li><span>5. College Registrar</span><strong>Final Issuance</strong></li>
+                    <li><span>4. Supreme Student Council</span><strong>Council Dues</strong></li>
+                    <li><span>5. Property Custodian</span><strong>Lab Equipment</strong></li>
+                    <li><span>6. Accounting Office</span><strong>Financial Dues</strong></li>
+                    <li><span>7. College Registrar</span><strong>Final Certificate</strong></li>
                 </ul>
                 <button type="button" class="directory-close-btn" onclick="toggleDirectory()">Close Directory</button>
             </div>
@@ -805,11 +985,13 @@
                 <div class="message-timestamp">${timeStr}</div>
                 <div class="message-bubble bot-message">
                     <div class="bot-meta">
-                        <span class="bot-tag">TPC Assistant</span>
-                        <span>Student Clearance AI</span>
+                        <div class="bot-meta-left">
+                            <span class="bot-tag">TPC Assistant</span>
+                            <span>Clearance Concierge</span>
+                        </div>
                     </div>
-                    <div>
-                        Chat reset. How can I assist with your <strong>TPC student clearance</strong>?
+                    <div class="bot-text-content">
+                        <p>Chat session refreshed. How can I assist with your <strong>TPC student clearance</strong>?</p>
                     </div>
                     <div class="starter-chips-wrap">
                         <div class="starter-chips">
@@ -870,15 +1052,15 @@
                 }
 
                 if (response.ok) {
-                    appendBotMessage(data.answer, data.retrieved_chunks);
+                    appendBotMessage(data.answer, data.retrieved_chunks, query);
                 } else {
-                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), []);
+                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), [], query);
                 }
             } catch (err) {
                 if (loadingBubble && loadingBubble.parentNode) {
                     loadingBubble.parentNode.removeChild(loadingBubble);
                 }
-                appendBotMessage('Network Error: ' + err.message, []);
+                appendBotMessage('Network Error: ' + err.message, [], query);
             } finally {
                 if (sendBtn) sendBtn.disabled = false;
                 input.focus();
@@ -901,19 +1083,23 @@
             if (!chat) return null;
             const div = document.createElement('div');
             div.className = 'message-bubble bot-message';
-            div.innerHTML = '<div class="bot-meta"><span class="bot-tag">TPC Assistant</span><span>Searching clearance guidelines...</span></div>' +
+            div.innerHTML = '<div class="bot-meta"><div class="bot-meta-left"><span class="bot-tag">TPC Assistant</span><span>Synthesizing handbook guidance...</span></div></div>' +
                             '<div class="loading-dots"><span></span><span></span><span></span></div>';
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
             return div;
         }
 
-        function appendBotMessage(answer, chunks) {
+        function appendBotMessage(answer, chunks, userQuery) {
             const chat = document.getElementById('chat-messages');
             if (!chat) return;
-            const div = document.createElement('div');
-            div.className = 'message-bubble bot-message';
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble bot-message';
 
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Handbook reference snippet
             let sourcesHtml = '';
             if (chunks && chunks.length > 0) {
                 const snippet = chunks.map(function(c, i) {
@@ -921,18 +1107,231 @@
                 }).join('\n\n' + '='.repeat(30) + '\n\n');
 
                 sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
-                              '📖 Handbook References (' + chunks.length + ') &darr;' +
+                              '📖 Verified References (' + chunks.length + ') &darr;' +
                               '</button>' +
                               '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
             }
 
-            div.innerHTML = '<div class="bot-meta">' +
-                            '<span class="bot-tag">TPC Assistant</span>' +
-                            '</div>' +
-                            '<div>' + formatMarkdown(answer || '') + '</div>' +
-                            sourcesHtml;
-            chat.appendChild(div);
+            // Generate smart follow-up suggestions based on content
+            const followups = generateSmartFollowups(userQuery, answer);
+            let followupsHtml = '';
+            if (followups && followups.length > 0) {
+                followupsHtml = '<div class="dynamic-followups">' +
+                    followups.map(function(f) {
+                        return '<button type="button" class="followup-chip" onclick="askQuestion(\'' + escapeJsString(f) + '\')">' +
+                               '<span>💬</span><span>' + escapeHtml(f) + '</span>' +
+                               '</button>';
+                    }).join('') +
+                    '</div>';
+            }
+
+            bubble.innerHTML = `
+                <div class="bot-meta">
+                    <div class="bot-meta-left">
+                        <span class="bot-tag">TPC Assistant</span>
+                        <span>Official Guidance</span>
+                    </div>
+                </div>
+                <div class="bot-text-content" id="stream-target"></div>
+                ${sourcesHtml}
+                <div class="message-action-bar">
+                    <span style="font-size:0.65rem; color:#94a3b8; margin-right:auto;">${timeStr}</span>
+                    <button type="button" class="msg-action-btn" onclick="copyMessageText(this)" title="Copy answer">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copy</span>
+                    </button>
+                    <button type="button" class="msg-action-btn" onclick="speakMessageText(this)" title="Read aloud">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                        <span>Listen</span>
+                    </button>
+                </div>
+                ${followupsHtml}
+            `;
+
+            chat.appendChild(bubble);
             chat.scrollTop = chat.scrollHeight;
+
+            const textTarget = bubble.querySelector('#stream-target');
+            if (textTarget) {
+                textTarget.removeAttribute('id');
+                // Rapid modern typewriter stream
+                streamMarkdown(textTarget, answer || '', chat);
+            }
+        }
+
+        // Smooth streaming animation for modern feel
+        function streamMarkdown(container, fullText, chatScrollContainer) {
+            const html = parseMarkdown(fullText);
+            const words = fullText.split(' ');
+            
+            // If short or marked failed, render instantly
+            if (words.length <= 15) {
+                container.innerHTML = html;
+                if (chatScrollContainer) chatScrollContainer.scrollTop = chatScrollContainer.scrollHeight;
+                return;
+            }
+
+            let currentIndex = 0;
+            const step = Math.max(2, Math.floor(words.length / 25));
+            container.innerHTML = '<span class="partial-text"></span><span class="typing-cursor"></span>';
+            const partialSpan = container.querySelector('.partial-text');
+            const cursor = container.querySelector('.typing-cursor');
+
+            const interval = setInterval(function() {
+                currentIndex += step;
+                if (currentIndex >= words.length) {
+                    clearInterval(interval);
+                    container.innerHTML = html;
+                    if (chatScrollContainer) chatScrollContainer.scrollTop = chatScrollContainer.scrollHeight;
+                } else {
+                    const partialMarkdown = words.slice(0, currentIndex).join(' ');
+                    partialSpan.innerHTML = parseMarkdown(partialMarkdown);
+                    if (chatScrollContainer) chatScrollContainer.scrollTop = chatScrollContainer.scrollHeight;
+                }
+            }, 25);
+
+            // Instant reveal on user tap
+            container.parentElement.addEventListener('click', function() {
+                clearInterval(interval);
+                container.innerHTML = html;
+            }, { once: true });
+        }
+
+        // Smart follow-up question generator based on context
+        function generateSmartFollowups(query, answer) {
+            const combined = ((query || '') + ' ' + (answer || '')).toLowerCase();
+
+            if (combined.includes('step') || combined.includes('submit') || combined.includes('initiat')) {
+                return [
+                    "What if an office rejects my request?",
+                    "How do I download my certificate?",
+                    "Show the 14 signatory offices"
+                ];
+            }
+            if (combined.includes('reject') || combined.includes('disapprov') || combined.includes('fail')) {
+                return [
+                    "How does re-evaluation work?",
+                    "Where do I submit required appeal documents?",
+                    "Can I talk to the Department Dean?"
+                ];
+            }
+            if (combined.includes('balance') || combined.includes('tuition') || combined.includes('cashier') || combined.includes('fee')) {
+                return [
+                    "Where is the Cashier's Office located?",
+                    "Can I clear with a promissory note?",
+                    "When do financial holds clear in the system?"
+                ];
+            }
+            if (combined.includes('tor') || combined.includes('transcript') || combined.includes('graduat')) {
+                return [
+                    "What are the prerequisites for TOR clearance?",
+                    "How long does the Registrar take to release TOR?",
+                    "What is Honorable Dismissal?"
+                ];
+            }
+            if (combined.includes('signatory') || combined.includes('department') || combined.includes('office')) {
+                return [
+                    "Which office should I clear first?",
+                    "What are the requirements for the College Library?",
+                    "How to contact OSAS for moral certificate?"
+                ];
+            }
+
+            return [
+                "What are the steps to submit clearance?",
+                "What are the 14 signatory offices?",
+                "Can I clear if I have an unpaid tuition balance?"
+            ];
+        }
+
+        // Full Markdown parsing with marked.js + fallback
+        function parseMarkdown(text) {
+            if (!text) return '';
+            if (typeof marked !== 'undefined' && marked.parse) {
+                try {
+                    return marked.parse(text);
+                } catch (e) {
+                    console.warn('marked parse error:', e);
+                }
+            }
+            // Robust internal fallback parser
+            let out = escapeHtml(text);
+            // Headers
+            out = out.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            out = out.replace(/^## (.*$)/gim, '<h3>$1</h3>');
+            // Blockquotes
+            out = out.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+            // Bold & Italic
+            out = out.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            out = out.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Code
+            out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // Lists
+            out = out.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            out = out.replace(/^- (.*$)/gim, '<li>$1</li>');
+            out = out.replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
+            // Newlines
+            out = out.replace(/\n\n/g, '<br><br>');
+            out = out.replace(/\n/g, '<br>');
+            return out;
+        }
+
+        function copyMessageText(btn) {
+            const bubble = btn.closest('.bot-message');
+            if (!bubble) return;
+            const content = bubble.querySelector('.bot-text-content');
+            if (!content) return;
+            const rawText = content.innerText || content.textContent;
+
+            navigator.clipboard.writeText(rawText).then(function() {
+                const span = btn.querySelector('span');
+                if (span) span.textContent = 'Copied! ✓';
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    if (span) span.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function speakMessageText(btn) {
+            if (!('speechSynthesis' in window)) {
+                alert('Text-to-speech is not supported in this browser.');
+                return;
+            }
+            const bubble = btn.closest('.bot-message');
+            if (!bubble) return;
+            const content = bubble.querySelector('.bot-text-content');
+            if (!content) return;
+            const rawText = content.innerText || content.textContent;
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                const span = btn.querySelector('span');
+                if (span) span.textContent = 'Listen';
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(rawText);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            const span = btn.querySelector('span');
+            if (span) span.textContent = 'Stop';
+
+            utterance.onend = function() {
+                if (span) span.textContent = 'Listen';
+            };
+            utterance.onerror = function() {
+                if (span) span.textContent = 'Listen';
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
 
         function toggleSources(btn) {
@@ -941,17 +1340,14 @@
             }
         }
 
-        function formatMarkdown(text) {
-            let escaped = escapeHtml(text);
-            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            escaped = escaped.replace(/\n/g, '<br>');
-            return escaped;
-        }
-
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function escapeJsString(str) {
+            return (str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
         window.addEventListener('DOMContentLoaded', function() {
