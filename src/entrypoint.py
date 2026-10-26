@@ -3,6 +3,11 @@ import sys
 import socket
 import threading
 
+# Ensure project root is always in sys.path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 def start_forwarder(from_port: int, to_port: int):
     """Binds a lightweight bidirectional TCP pipe from from_port to to_port."""
     def forward_loop():
@@ -62,7 +67,11 @@ def main():
 
     print(f"[MiniCAP] Launching Uvicorn on 0.0.0.0:{active_port}...", flush=True)
     import uvicorn
-    uvicorn.run("src.app:app", host="0.0.0.0", port=active_port)
+    try:
+        from src.app import app
+    except ImportError:
+        from app import app
+    uvicorn.run(app, host="0.0.0.0", port=active_port)
 
 
 if __name__ == "__main__":
