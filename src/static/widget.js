@@ -213,15 +213,15 @@
         /* Mobile Screens (<= 640px) */
         @media (max-width: 640px) {
             #tpc-widget-launcher {
-                bottom: 18px;
-                right: 18px;
-                width: 54px;
-                height: 54px;
+                bottom: 84px !important; /* Floats safely above mobile bottom navigation bar */
+                right: 16px !important;
+                width: 52px !important;
+                height: 52px !important;
             }
 
             #tpc-widget-teaser {
-                bottom: 80px;
-                right: 18px;
+                bottom: 144px !important;
+                right: 16px !important;
             }
 
             #tpc-widget-container {
