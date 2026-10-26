@@ -3,33 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Talibon Polytechnic College - Student Clearance System & AI Assistant</title>
-    <meta name="description" content="Official Student Clearance System portal and floating AI assistant for Talibon Polytechnic College.">
+    <title>Student Dashboard - Student Clearance System | Talibon Polytechnic College</title>
+    <meta name="description" content="Official Student Clearance System portal for Talibon Polytechnic College with embedded AI Assistant.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --tpc-blue-dark: #081a48;
-            --tpc-blue-deep: #0f2e8a;
-            --tpc-blue-primary: #1d4ed8;
-            --tpc-blue-vibrant: #2563eb;
+            --bg-body: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            
+            --tpc-blue-primary: #2563eb;
+            --tpc-blue-dark: #1e40af;
             --tpc-blue-light: #3b82f6;
-            --tpc-cyan: #06b6d4;
-            --tpc-purple: #8b5cf6;
+            --tpc-blue-subtle: #eff6ff;
+            --tpc-blue-pill: #e0f2fe;
+            --tpc-blue-text: #0284c7;
+            
             --tpc-green: #10b981;
+            --tpc-green-subtle: #ecfdf5;
             --tpc-amber: #f59e0b;
+            --tpc-amber-subtle: #fffbeb;
             --tpc-red: #ef4444;
+            --tpc-red-subtle: #fef2f2;
+            --tpc-red-border: #fecdd3;
             
-            --bg-blueprint: #0d276b;
-            --border-blueprint: rgba(255, 255, 255, 0.14);
-            
-            --card-white: #ffffff;
             --text-dark: #0f172a;
             --text-slate: #334155;
             --text-muted: #64748b;
+            --text-light-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-light: #f1f5f9;
             
-            --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.05);
+            --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04);
+            --shadow-elevated: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
         }
 
         * {
@@ -41,70 +49,57 @@
         }
 
         body {
-            min-height: 100vh;
-            background-color: #0b1e52;
+            background-color: var(--bg-body);
             color: var(--text-dark);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
         }
 
-        /* Blueprint grid pattern from TPC portal */
-        .blueprint-bg {
-            background-color: #0d276b;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 38px 38px;
-            background-position: -1px -1px;
-        }
-
-        /* Top Developer & Embed Utility Bar */
-        .utility-bar {
-            background: #061338;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 0.5rem 1.25rem;
+        /* Top Integration & Embed Bar */
+        .integration-bar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 0.75rem;
             font-size: 0.78rem;
-            color: #cbd5e1;
             z-index: 1000;
         }
 
-        .utility-left {
+        .integration-title-group {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0.5rem;
         }
 
-        .utility-pill {
-            background: rgba(37, 99, 235, 0.25);
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            color: #93c5fd;
+        .integration-pill {
+            background: #e0f2fe;
+            color: #0284c7;
             padding: 0.2rem 0.6rem;
             border-radius: 9999px;
             font-weight: 700;
             font-size: 0.7rem;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
-        .utility-actions {
+        .integration-actions {
             display: flex;
             align-items: center;
             gap: 0.65rem;
         }
 
-        .util-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: #ffffff;
-            padding: 0.35rem 0.8rem;
+        .int-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            color: var(--text-slate);
+            padding: 0.4rem 0.85rem;
             border-radius: 8px;
-            font-size: 0.74rem;
+            font-size: 0.76rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
@@ -114,50 +109,67 @@
             text-decoration: none;
         }
 
-        .util-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.35);
+        .int-btn:hover {
+            background: #f1f5f9;
+            color: var(--text-dark);
         }
 
-        .util-btn.active {
-            background: var(--tpc-blue-vibrant);
-            border-color: #60a5fa;
+        .int-btn.primary {
+            background: var(--tpc-blue-primary);
+            border-color: var(--tpc-blue-primary);
             color: #ffffff;
         }
 
-        /* --- TPC Portal Header --- */
-        .portal-header {
-            background: rgba(11, 30, 82, 0.96);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-blueprint);
-            padding: 0.85rem 1.75rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        .int-btn.primary:hover {
+            background: var(--tpc-blue-dark);
         }
 
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .int-btn.active {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--tpc-blue-primary);
+        }
+
+        /* Dashboard Master Layout */
+        .dashboard-container {
+            flex: 1;
             display: flex;
-            align-items: center;
+            min-height: calc(100vh - 46px);
+        }
+
+        /* --- Left Sidebar (Matches Screenshot) --- */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            gap: 1.5rem;
+            padding: 1.5rem 1.25rem;
+            flex-shrink: 0;
         }
 
-        .header-brand {
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+        .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 0.85rem;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
             text-decoration: none;
         }
 
-        .tpc-crest-logo {
-            width: 42px;
-            height: 42px;
+        .brand-logo-circle {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: #ffffff;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+            border: 2px solid #e0f2fe;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,386 +177,699 @@
             flex-shrink: 0;
         }
 
-        .tpc-crest-logo svg {
-            width: 42px;
-            height: 42px;
+        .brand-logo-circle svg {
+            width: 36px;
+            height: 36px;
         }
 
-        .brand-text {
+        .brand-info {
             display: flex;
             flex-direction: column;
-        }
-
-        .brand-college {
-            font-size: 0.65rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #93c5fd;
         }
 
         .brand-title {
-            font-size: 1.05rem;
+            font-size: 0.92rem;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.01em;
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .student-chip {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 0.35rem 0.85rem;
-            border-radius: 9999px;
-            color: #ffffff;
-            font-size: 0.78rem;
-        }
-
-        .student-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--tpc-cyan) 0%, var(--tpc-blue-vibrant) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 0.72rem;
-            color: #ffffff;
-        }
-
-        /* --- Main System Dashboard --- */
-        .portal-main {
-            flex: 1;
-            max-width: 1400px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 2rem 1.75rem 4rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.75rem;
-        }
-
-        /* Clearance Overview Banner */
-        .status-hero {
-            background: linear-gradient(135deg, rgba(29, 78, 216, 0.35) 0%, rgba(15, 46, 138, 0.45) 100%);
-            border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 20px;
-            padding: 1.75rem 2rem;
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            color: #ffffff;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .status-hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 100%;
-            background: radial-gradient(circle at right center, rgba(6, 182, 212, 0.18) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-width: 650px;
-        }
-
-        .term-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--tpc-cyan);
-        }
-
-        .hero-title {
-            font-size: 1.65rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+            color: var(--text-dark);
             line-height: 1.2;
         }
 
-        .hero-desc {
-            font-size: 0.88rem;
-            color: #cbd5e1;
-            line-height: 1.55;
-        }
-
-        .hero-progress-box {
-            background: rgba(8, 26, 72, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            min-width: 280px;
-        }
-
-        .progress-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        .progress-bar-track {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 62.5%; /* 5 of 8 cleared */
-            background: linear-gradient(90deg, var(--tpc-cyan) 0%, var(--tpc-green) 100%);
-            border-radius: 9999px;
-            transition: width 0.6s ease;
-        }
-
-        .progress-footer {
+        .brand-sub {
             font-size: 0.72rem;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        /* Signatory Offices Table Card */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.75rem;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .white-card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-header-bar {
-            padding: 1.15rem 1.5rem;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #ffffff;
-        }
-
-        .card-heading {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.01em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .clearance-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
-        .clearance-table th {
-            background: #f8fafc;
-            color: #475569;
+        .nav-section-label {
+            font-size: 0.68rem;
             font-weight: 700;
-            font-size: 0.72rem;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0.85rem 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
+            color: var(--text-light-muted);
+            margin-bottom: 0.65rem;
+            padding-left: 0.5rem;
         }
 
-        .clearance-table td {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-            vertical-align: middle;
-        }
-
-        .clearance-table tr:hover td {
-            background: #fbfcfe;
-        }
-
-        .office-name {
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .office-officer {
-            font-size: 0.75rem;
-            color: #64748b;
-        }
-
-        /* Status Pills */
-        .status-badge {
-            display: inline-flex;
+        .nav-item {
+            display: flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.3rem 0.65rem;
-            border-radius: 9999px;
-            font-size: 0.72rem;
+            gap: 0.75rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-slate);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.active {
+            background: #e0f2fe;
+            color: #0284c7;
             font-weight: 700;
+            border: 1px solid #bae6fd;
         }
 
-        .badge-cleared {
-            background: #ecfdf5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
-        }
-
-        .badge-pending {
-            background: #fffbeb;
-            color: #d97706;
-            border: 1px solid #fde68a;
-        }
-
-        .badge-locked {
+        .nav-item:hover:not(.active) {
             background: #f1f5f9;
-            color: #64748b;
-            border: 1px solid #e2e8f0;
+            color: var(--text-dark);
         }
 
-        /* Right Column Side Cards */
-        .side-col {
+        /* User Profile Pill at Bottom of Sidebar */
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 0.85rem;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .user-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            min-width: 0;
+        }
+
+        .user-avatar-initials {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: var(--text-slate);
+            font-weight: 700;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .user-name-text {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- Main Content Area --- */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            height: 64px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .navbar-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .portal-badge {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            padding: 0.2rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .navbar-bell {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .navbar-bell:hover {
+            background: #f8fafc;
+            color: var(--text-dark);
+        }
+
+        /* Content Body */
+        .content-body {
+            padding: 2rem 2.5rem 5rem;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .quick-actions-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
+        @media (max-width: 640px) {
+            .content-body {
+                padding: 1.25rem 1rem 4rem;
+            }
+        }
+
+        /* Hero Welcome Card (Matches Screenshot Perfectly) */
+        .hero-welcome-card {
+            background: linear-gradient(135deg, #e8f2fe 0%, #ffffff 50%, #f0f7ff 100%);
+            border-radius: 24px;
+            padding: 2.25rem 2.5rem;
+            border: 1px solid #e0f2fe;
+            box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .hero-left {
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             gap: 0.85rem;
         }
 
-        .action-row-btn {
+        .hero-system-tag {
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--tpc-blue-primary);
+        }
+
+        .hero-heading {
+            font-size: 1.95rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .hero-desc {
+            font-size: 0.92rem;
+            color: #475569;
+            line-height: 1.55;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .hero-pill {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        /* Progress Bar Section inside Hero Card */
+        .hero-progress-section {
+            margin-top: 1.25rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .progress-top-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.85rem 1rem;
-            border-radius: 12px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #1e293b;
-            text-decoration: none;
-            font-size: 0.84rem;
+        }
+
+        .progress-percent {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .not-started-pill {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--tpc-blue-primary);
+            border-radius: 9999px;
+        }
+
+        .progress-subtext {
+            font-size: 0.76rem;
+            color: #64748b;
+        }
+
+        /* Right Circular Course Avatar */
+        .hero-right-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+
+        .course-circle {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 16px 36px -6px rgba(37, 99, 235, 0.18), 0 0 0 10px rgba(255, 255, 255, 0.75);
+            border: 4px solid #e0f2fe;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .course-code {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .course-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .course-status-caption {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .course-status-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #60a5fa;
+        }
+
+        .course-status-val {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .course-status-sub {
+            font-size: 0.7rem;
+            color: #60a5fa;
             font-weight: 600;
-            transition: all 0.2s ease;
-            cursor: pointer;
         }
 
-        .action-row-btn:hover {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: var(--tpc-blue-primary);
-            transform: translateX(2px);
+        /* Inactive Period Notice Banner (Matches Screenshot) */
+        .inactive-notice-banner {
+            background: #fff1f2;
+            border: 1px solid var(--tpc-red-border);
+            border-radius: 18px;
+            padding: 1.15rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .action-icon-group {
+        .notice-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lock-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #fee2e2;
+            color: #e11d48;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notice-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .notice-heading-row {
             display: flex;
             align-items: center;
             gap: 0.65rem;
         }
 
-        /* Embed Instructions Modal */
-        .embed-modal-overlay {
+        .notice-tag {
+            background: #fee2e2;
+            color: #e11d48;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.15rem 0.55rem;
+            border-radius: 6px;
+        }
+
+        .notice-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #9f1239;
+        }
+
+        .notice-desc {
+            font-size: 0.82rem;
+            color: #be123c;
+        }
+
+        .notice-btn {
+            background: #e11d48;
+            color: #ffffff;
+            border: none;
+            padding: 0.55rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .notice-btn:hover {
+            background: #be123c;
+        }
+
+        /* 4 Metric Cards Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .metric-icon-square {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-amber { background: #fef3c7; color: #d97706; }
+        .icon-green { background: #d1fae5; color: #059669; }
+        .icon-red { background: #fee2e2; color: #dc2626; }
+
+        .metric-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .metric-val {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .metric-sub {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Bottom Row Split: Recent Activity & Clearance Breakdown */
+        .split-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .split-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-tag {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .view-all-link {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--tpc-blue-primary);
+            text-decoration: none;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty-activity-box {
+            background: #f8fafc;
+            border: 1px dashed var(--border-color);
+            border-radius: 14px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Simulation Wrapper */
+        .mobile-preview-container {
+            display: none;
+            padding: 2.5rem 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.simulator-mode .main-wrapper {
+            display: none;
+        }
+
+        body.simulator-mode .sidebar {
+            display: none;
+        }
+
+        body.simulator-mode .mobile-preview-container {
+            display: flex;
+        }
+
+        .phone-frame {
+            width: 390px;
+            height: 800px;
+            background: #0f172a;
+            border-radius: 46px;
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.4), 0 0 0 10px #334155, 0 0 0 12px #1e293b;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 24px;
+            background: #0f172a;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 100;
+        }
+
+        .phone-screen {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+
+        /* Embed Code Modal */
+        .embed-modal-backdrop {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(11, 25, 60, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
             z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
         }
 
-        .embed-modal-overlay.active {
+        .embed-modal-backdrop.active {
             display: flex;
         }
 
-        .embed-modal-content {
+        .embed-modal-box {
             background: #ffffff;
             border-radius: 20px;
             width: 100%;
-            max-width: 620px;
+            max-width: 600px;
             padding: 2rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
             position: relative;
-            animation: modalIn 0.25s ease;
+            animation: modalFadeIn 0.2s ease;
         }
 
-        @keyframes modalIn {
-            0% { opacity: 0; transform: scale(0.95); }
+        @keyframes modalFadeIn {
+            0% { opacity: 0; transform: scale(0.96); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        .modal-header {
+        .modal-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 1.25rem;
         }
 
-        .modal-title {
-            font-size: 1.25rem;
+        .modal-headline {
+            font-size: 1.2rem;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text-dark);
         }
 
-        .modal-close-btn {
+        .modal-close {
             background: transparent;
             border: none;
             font-size: 1.25rem;
             cursor: pointer;
-            color: #64748b;
+            color: var(--text-muted);
             width: 32px;
             height: 32px;
             border-radius: 8px;
@@ -553,32 +878,31 @@
             justify-content: center;
         }
 
-        .modal-close-btn:hover {
+        .modal-close:hover {
             background: #f1f5f9;
-            color: #0f172a;
+            color: var(--text-dark);
         }
 
-        .code-snippet-box {
+        .code-box {
             background: #0f172a;
             border-radius: 12px;
             padding: 1rem 1.25rem;
-            color: #e2e8f0;
+            color: #f1f5f9;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             margin: 1rem 0;
-            position: relative;
+            border-left: 4px solid var(--tpc-blue-primary);
             word-break: break-all;
-            border-left: 4px solid var(--tpc-blue-vibrant);
         }
 
-        .copy-code-btn {
-            background: var(--tpc-blue-vibrant);
+        .copy-button {
+            background: var(--tpc-blue-primary);
             color: #ffffff;
             border: none;
             padding: 0.65rem 1.25rem;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -586,70 +910,21 @@
             transition: all 0.2s ease;
         }
 
-        .copy-code-btn:hover {
-            background: var(--tpc-blue-primary);
-        }
-
-        /* --- Mobile Frame Simulator Mode --- */
-        .mobile-sim-wrapper {
-            display: none;
-            padding: 2rem 1rem;
-            justify-content: center;
-            align-items: center;
-        }
-
-        body.simulator-active .portal-main {
-            display: none;
-        }
-
-        body.simulator-active .mobile-sim-wrapper {
-            display: flex;
-        }
-
-        .iphone-frame {
-            width: 385px;
-            height: 780px;
-            background: #111827;
-            border-radius: 48px;
-            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.6), 0 0 0 12px #374151, 0 0 0 14px #1f2937;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .iphone-notch {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 26px;
-            background: #111827;
-            border-bottom-left-radius: 16px;
-            border-bottom-right-radius: 16px;
-            z-index: 100;
-        }
-
-        .iphone-screen {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #ffffff;
+        .copy-button:hover {
+            background: var(--tpc-blue-dark);
         }
     </style>
 </head>
-<body class="blueprint-bg">
+<body>
 
     <!-- Top Utility & Embed Action Bar -->
-    <div class="utility-bar">
-        <div class="utility-left">
-            <span class="utility-pill">System Preview</span>
-            <span>Talibon Polytechnic College Student Clearance Portal + Floating Chatbot</span>
+    <div class="integration-bar">
+        <div class="integration-title-group">
+            <span class="integration-pill">Theme Matched</span>
+            <span style="font-weight:600; color:#334155;">TPC Student Clearance Portal (BSIS Theme) + Floating Chatbot</span>
         </div>
-        <div class="utility-actions">
-            <button type="button" class="util-btn active" id="view-desktop-btn" onclick="setViewMode('desktop')">
+        <div class="integration-actions">
+            <button type="button" class="int-btn active" id="btn-desktop-view" onclick="switchView('desktop')">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                     <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -657,304 +932,356 @@
                 </svg>
                 Desktop Portal
             </button>
-            <button type="button" class="util-btn" id="view-mobile-btn" onclick="setViewMode('mobile')">
+            <button type="button" class="int-btn" id="btn-mobile-view" onclick="switchView('mobile')">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
                     <line x1="12" y1="18" x2="12.01" y2="18"></line>
                 </svg>
                 Mobile Phone Preview
             </button>
-            <button type="button" class="util-btn" onclick="openEmbedModal()" style="background:#2563eb;border-color:#60a5fa;">
+            <button type="button" class="int-btn primary" onclick="openEmbedModal()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polyline points="16 18 22 12 16 6"></polyline>
                     <polyline points="8 6 2 12 8 18"></polyline>
                 </svg>
-                Embed in Your System
+                Copy Embed Script
             </button>
-            <a href="/widget" target="_blank" class="util-btn" title="Open Standalone Widget">
+            <a href="/widget" target="_blank" class="int-btn" title="Open Standalone Widget">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
-                Fullscreen Widget
+                Standalone View
             </a>
         </div>
     </div>
 
-    <!-- TPC Portal Navigation Bar -->
-    <header class="portal-header">
-        <div class="header-container">
-            <a href="/" class="header-brand">
-                <div class="tpc-crest-logo">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
-                        <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
-                        <path d="M50 20 L72 32 V54 C72 68 50 80 50 80 C50 80 28 68 28 54 V32 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
-                        <path d="M50 24 L68 34 V52 C68 64 50 74 50 74 C50 74 32 64 32 52 V34 Z" fill="#1e40af"/>
-                        <path d="M47 38 L53 38 L52 56 L48 56 Z" fill="#f59e0b"/>
-                        <circle cx="50" cy="35" r="4" fill="#ef4444"/>
-                        <path d="M44 58 L56 58 L50 68 Z" fill="#f59e0b"/>
-                        <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
+    <!-- Master Layout -->
+    <div class="dashboard-container">
+        <!-- Left Sidebar matching User's System -->
+        <aside class="sidebar">
+            <div>
+                <a href="/" class="sidebar-brand">
+                    <div class="brand-logo-circle">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="#0f2e8a" stroke="#f59e0b" stroke-width="4"/>
+                            <circle cx="50" cy="50" r="41" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3,3"/>
+                            <path d="M50 20 L72 32 V54 C72 68 50 80 50 80 C50 80 28 68 28 54 V32 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+                            <path d="M50 24 L68 34 V52 C68 64 50 74 50 74 C50 74 32 64 32 52 V34 Z" fill="#1e40af"/>
+                            <path d="M47 38 L53 38 L52 56 L48 56 Z" fill="#f59e0b"/>
+                            <circle cx="50" cy="35" r="4" fill="#ef4444"/>
+                            <path d="M44 58 L56 58 L50 68 Z" fill="#f59e0b"/>
+                            <path d="M40 46 C45 44 49 46 50 48 C51 46 55 44 60 46 V52 C55 50 51 52 50 54 C49 52 45 50 40 52 Z" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                    <div class="brand-info">
+                        <span class="brand-title">Student Clearance</span>
+                        <span class="brand-sub">TPC System</span>
+                    </div>
+                </a>
+
+                <div class="nav-section-label">Platform</div>
+                <a href="#" class="nav-item active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Profile card at bottom of sidebar -->
+            <div class="sidebar-user">
+                <div class="user-left">
+                    <div class="user-avatar-initials">KA</div>
+                    <span class="user-name-text">Kean Lester Auguis</span>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#94a3b8; flex-shrink:0;">
+                    <polyline points="7 15 12 20 17 15"></polyline>
+                    <polyline points="7 9 12 4 17 9"></polyline>
+                </svg>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div class="navbar-left">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#64748b; margin-right:4px;">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                    </svg>
+                    <h1 class="navbar-title">Dashboard</h1>
+                    <span class="portal-badge">Student Portal</span>
+                </div>
+
+                <div class="navbar-bell" title="Notifications">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                 </div>
-                <div class="brand-text">
-                    <span class="brand-college">Talibon Polytechnic College</span>
-                    <span class="brand-title">Student Clearance Portal</span>
-                </div>
-            </a>
+            </nav>
 
-            <div class="header-nav">
-                <div class="student-chip">
-                    <div class="student-avatar">JD</div>
-                    <span>Juan Dela Cruz • BSIT 4-A</span>
+            <!-- Content Area matching user's screenshot -->
+            <main class="content-body">
+                <!-- Hero Welcome Card -->
+                <div class="hero-welcome-card">
+                    <div class="hero-left">
+                        <div class="hero-system-tag">Student Clearance System</div>
+                        <h2 class="hero-heading">Welcome, Kean Lester Auguis!</h2>
+                        <p class="hero-desc">
+                            Track your clearance progress, review office statuses, and submit additional clearance requests when needed.
+                        </p>
+
+                        <div class="hero-pills">
+                            <span class="hero-pill">Student ID: 202313282</span>
+                            <span class="hero-pill">BSIS Course Theme</span>
+                            <span class="hero-pill">4th Year</span>
+                        </div>
+
+                        <!-- Progress Bar Section -->
+                        <div class="hero-progress-section">
+                            <div class="progress-top-row">
+                                <span class="progress-percent">0% Completed</span>
+                                <span class="not-started-pill">Not Started</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <span class="progress-subtext">Submit your first clearance request to start your clearance progress.</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Circular Badge -->
+                    <div class="hero-right-badge">
+                        <div class="course-circle">
+                            <div class="course-code">BSIS</div>
+                            <div class="course-label">Course</div>
+                        </div>
+                        <div class="course-status-caption">
+                            <span class="course-status-label">Clearance Status</span>
+                            <span class="course-status-val">Not Started</span>
+                            <span class="course-status-sub">0% complete</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Inactive Period Notice Banner -->
+                <div class="inactive-notice-banner">
+                    <div class="notice-left">
+                        <div class="lock-icon-box">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <div class="notice-content">
+                            <div class="notice-heading-row">
+                                <span class="notice-tag">Period Inactive</span>
+                                <span class="notice-title">Clearance Submissions are Paused</span>
+                            </div>
+                            <p class="notice-desc">
+                                The Office of Student Affairs and Services (OSAS) has not opened the clearance period yet. Clearance requests cannot be submitted at this time.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="notice-btn" onclick="window.TPCChatAssistant && window.TPCChatAssistant.open()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>View Notice Details</span>
+                    </button>
+                </div>
+
+                <!-- 4 Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon-square icon-blue">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="metric-details">
+                            <span class="metric-label">Total Approved</span>
+                            <span class="metric-val">0 / 14</span>
+                            <span class="metric-sub">Departments</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-square icon-amber">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="metric-details">
+                            <span class="metric-label">Pending Requests</span>
+                            <span class="metric-val">0</span>
+                            <span class="metric-sub">Departments</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-square icon-green">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="metric-details">
+                            <span class="metric-label">Approved</span>
+                            <span class="metric-val">0</span>
+                            <span class="metric-sub">Departments</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-square icon-red">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div class="metric-details">
+                            <span class="metric-label">Not Approved</span>
+                            <span class="metric-val">14</span>
+                            <span class="metric-sub">Departments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Row: Recent Activity & My Clearance Status -->
+                <div class="split-row">
+                    <div class="section-card">
+                        <div class="section-header-row">
+                            <div>
+                                <div class="section-tag">Latest Updates</div>
+                                <h3 class="section-title">Recent Activity</h3>
+                            </div>
+                            <a href="#" class="view-all-link">View All</a>
+                        </div>
+                        <div class="empty-activity-box">
+                            No recent activity found. Submissions will appear here once the clearance period opens.
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="section-header-row">
+                            <div>
+                                <div class="section-tag">Office Breakdown</div>
+                                <h3 class="section-title">My Clearance Status</h3>
+                            </div>
+                            <a href="#" class="view-all-link">View All</a>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.65rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;">
+                                <div>
+                                    <div style="font-weight:700; font-size:0.86rem; color:#0f172a;">Guidance Office</div>
+                                    <div style="font-size:0.74rem; color:#64748b;">Student Counseling &amp; Exit Verification</div>
+                                </div>
+                                <span style="font-size:0.72rem; font-weight:700; background:#f1f5f9; color:#64748b; padding:0.25rem 0.65rem; border-radius:9999px;">Not Requested</span>
+                            </div>
+
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;">
+                                <div>
+                                    <div style="font-weight:700; font-size:0.86rem; color:#0f172a;">College Library</div>
+                                    <div style="font-size:0.74rem; color:#64748b;">Book Returns &amp; Overdue Accounts</div>
+                                </div>
+                                <span style="font-size:0.72rem; font-weight:700; background:#f1f5f9; color:#64748b; padding:0.25rem 0.65rem; border-radius:9999px;">Not Requested</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Clearance Portal View -->
-    <main class="portal-main">
-        <!-- Status Hero Banner -->
-        <section class="status-hero">
-            <div class="hero-info">
-                <div class="term-badge">
-                    <span>Academic Year 2026-2027 • 1st Semester Clearance</span>
-                </div>
-                <h1 class="hero-title">Student Clearance Status: In Progress</h1>
-                <p class="hero-desc">
-                    Your clearance request is currently undergoing review across institutional signatory offices. Please verify outstanding laboratory balances or library returns before finals week.
-                </p>
-            </div>
-
-            <div class="hero-progress-box">
-                <div class="progress-header">
-                    <span>Clearance Progress</span>
-                    <span style="color:#34d399;">5 of 8 Approved (62%)</span>
-                </div>
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill"></div>
-                </div>
-                <div class="progress-footer">
-                    <span>⚡ 2 pending assessments • 1 locked</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Dashboard Table Grid -->
-        <div class="dashboard-grid">
-            <!-- Left Table -->
-            <div class="white-card">
-                <div class="card-header-bar">
-                    <h2 class="card-heading">
-                        <span>📋 Signatory Office Approvals</span>
-                    </h2>
-                    <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Updated Just Now</span>
-                </div>
-                <div class="table-responsive">
-                    <table class="clearance-table">
-                        <thead>
-                            <tr>
-                                <th>Department / Office</th>
-                                <th>Signatory Officer</th>
-                                <th>Status</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Dean of Computer Studies</div>
-                                    <div class="office-officer">Academic Affairs</div>
-                                </td>
-                                <td>Engr. M. Torralba</td>
-                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
-                                <td>All grades submitted &amp; verified</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">College Library</div>
-                                    <div class="office-officer">Learning Resource Center</div>
-                                </td>
-                                <td>Mrs. C. Aumentado</td>
-                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
-                                <td>No overdue books or fines</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Office of Student Affairs (OSAS)</div>
-                                    <div class="office-officer">Student Welfare</div>
-                                </td>
-                                <td>Prof. R. Boyles</td>
-                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
-                                <td>Good moral clearance granted</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Supreme Student Council</div>
-                                    <div class="office-officer">Student Government</div>
-                                </td>
-                                <td>SSC Auditor</td>
-                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
-                                <td>Organization fees settled</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Property Custodian</div>
-                                    <div class="office-officer">Campus Facilities</div>
-                                </td>
-                                <td>Mr. A. Cutamora</td>
-                                <td><span class="status-badge badge-cleared">✓ Cleared</span></td>
-                                <td>Laboratory equipment accounted</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Accounting Office</div>
-                                    <div class="office-officer">Finance &amp; Cashier</div>
-                                </td>
-                                <td>Ms. E. Garcia</td>
-                                <td><span class="status-badge badge-pending">⏳ Pending Assessment</span></td>
-                                <td>Pending remaining PHP 350 lab breakages fee</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">Guidance &amp; Counseling</div>
-                                    <div class="office-officer">Student Services</div>
-                                </td>
-                                <td>Ms. K. Munez</td>
-                                <td><span class="status-badge badge-pending">⏳ In Queue</span></td>
-                                <td>Scheduled exit interview</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="office-name">College Registrar</div>
-                                    <div class="office-officer">Records Management</div>
-                                </td>
-                                <td>Dr. J. Auxtero</td>
-                                <td><span class="status-badge badge-locked">🔒 Locked</span></td>
-                                <td>Requires all preceding signatory approvals</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="side-col">
-                <div class="quick-actions-card">
-                    <h3 style="font-size:0.95rem; font-weight:800; color:#0f172a; margin-bottom:0.25rem;">Portal Actions</h3>
-                    
-                    <button type="button" class="action-row-btn" onclick="window.TPCChatAssistant && window.TPCChatAssistant.open()">
-                        <div class="action-icon-group">
-                            <span>💬</span>
-                            <span>Ask Clearance Assistant</span>
-                        </div>
-                        <span style="color:#2563eb; font-weight:700;">Open &rarr;</span>
-                    </button>
-
-                    <button type="button" class="action-row-btn" onclick="openEmbedModal()">
-                        <div class="action-icon-group">
-                            <span>🚀</span>
-                            <span>Get 1-Line Embed Code</span>
-                        </div>
-                        <span style="color:#2563eb; font-weight:700;">View &rarr;</span>
-                    </button>
-
-                    <button type="button" class="action-row-btn" onclick="setViewMode('mobile')">
-                        <div class="action-icon-group">
-                            <span>📱</span>
-                            <span>Test Mobile Phone View</span>
-                        </div>
-                        <span style="color:#2563eb; font-weight:700;">Test &rarr;</span>
-                    </button>
-                </div>
-
-                <div class="quick-actions-card" style="background:#0f172a; color:#ffffff;">
-                    <div style="font-size:0.7rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Clearance System Tips</div>
-                    <div style="font-size:0.88rem; font-weight:700; margin-top:0.25rem;">Stuck on an Office?</div>
-                    <p style="font-size:0.78rem; color:#94a3b8; line-height:1.5; margin-top:0.35rem;">
-                        Click the floating chat icon in the bottom-right corner to ask the AI assistant how to resolve pending holds, request re-evaluation, or contact signatory personnel.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Mobile Phone Frame Simulator -->
-    <div class="mobile-sim-wrapper">
-        <div class="iphone-frame">
-            <div class="iphone-notch"></div>
-            <iframe src="/widget" class="iphone-screen" title="Mobile Chatbot Preview"></iframe>
+    <!-- Mobile Screen Simulator -->
+    <div class="mobile-preview-container">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <iframe src="/widget" class="phone-screen" title="Mobile Chatbot Preview"></iframe>
         </div>
     </div>
 
     <!-- Embed Code Modal -->
-    <div class="embed-modal-overlay" id="embed-modal" onclick="closeEmbedModal(event)">
-        <div class="embed-modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <div class="modal-title">🚀 Embed Pop-up Chatbot in Your System</div>
-                <button type="button" class="modal-close-btn" onclick="closeEmbedModal()">✕</button>
+    <div class="embed-modal-backdrop" id="embed-modal-backdrop" onclick="closeEmbedModal(event)">
+        <div class="embed-modal-box" onclick="event.stopPropagation()">
+            <div class="modal-head">
+                <h3 class="modal-headline">🚀 Add This Pop-up to Your Live Portal</h3>
+                <button type="button" class="modal-close" onclick="closeEmbedModal()">✕</button>
             </div>
             <p style="font-size:0.85rem; color:#475569; line-height:1.55;">
-                To add this floating pop-up chatbot to your live student clearance portal (e.g. <code>student-clearance-system-urxl.onrender.com</code> or any Laravel/Blade/HTML template), just paste this single script tag right before the closing <code>&lt;/body&gt;</code> tag:
+                To embed this floating clearance pop-up chatbot into your Laravel clearance system (e.g. at <code>student-clearance-system-urxl.onrender.com</code>), paste this script tag right before the closing <code>&lt;/body&gt;</code> in your main layout (e.g. <code>resources/views/layouts/app.blade.php</code>):
             </p>
 
-            <div class="code-snippet-box" id="code-snippet">&lt;script src="https://minicap-production.up.railway.app/widget.js" async&gt;&lt;/script&gt;</div>
+            <div class="code-box" id="embed-script-box">&lt;script src="https://minicap-production.up.railway.app/widget.js" async&gt;&lt;/script&gt;</div>
 
             <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1.25rem;">
-                <button type="button" class="copy-code-btn" id="copy-btn" onclick="copyEmbedCode()">
+                <button type="button" class="copy-button" id="copy-btn-el" onclick="handleCopyScript()">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
-                    <span id="copy-text">Copy Script Code</span>
+                    <span id="copy-btn-label">Copy Script Code</span>
                 </button>
-                <span style="font-size:0.75rem; color:#64748b;">Works automatically on both desktop and mobile!</span>
+                <span style="font-size:0.75rem; color:#64748b;">Zero dependencies • Auto-responsive</span>
             </div>
         </div>
     </div>
 
-    <!-- Automatically load the floating widget on the portal page! -->
+    <!-- Automatically load the floating chatbot pop-up widget! -->
     <script src="/widget.js" async></script>
 
     <script>
-        function setViewMode(mode) {
-            const deskBtn = document.getElementById('view-desktop-btn');
-            const mobBtn = document.getElementById('view-mobile-btn');
+        function switchView(mode) {
+            const deskBtn = document.getElementById('btn-desktop-view');
+            const mobBtn = document.getElementById('btn-mobile-view');
             if (mode === 'mobile') {
-                document.body.classList.add('simulator-active');
+                document.body.classList.add('simulator-mode');
                 if (mobBtn) mobBtn.classList.add('active');
                 if (deskBtn) deskBtn.classList.remove('active');
             } else {
-                document.body.classList.remove('simulator-active');
+                document.body.classList.remove('simulator-mode');
                 if (deskBtn) deskBtn.classList.add('active');
                 if (mobBtn) mobBtn.classList.remove('active');
             }
         }
 
         function openEmbedModal() {
-            const modal = document.getElementById('embed-modal');
+            const modal = document.getElementById('embed-modal-backdrop');
             if (modal) modal.classList.add('active');
         }
 
         function closeEmbedModal(e) {
-            const modal = document.getElementById('embed-modal');
+            const modal = document.getElementById('embed-modal-backdrop');
             if (modal) modal.classList.remove('active');
         }
 
-        function copyEmbedCode() {
+        function handleCopyScript() {
             const code = '<script src="https://minicap-production.up.railway.app/widget.js" async><' + '/script>';
             navigator.clipboard.writeText(code).then(function() {
-                const text = document.getElementById('copy-text');
-                if (text) text.textContent = 'Copied to Clipboard! ✓';
+                const label = document.getElementById('copy-btn-label');
+                if (label) label.textContent = 'Copied to Clipboard! ✓';
                 setTimeout(function() {
-                    if (text) text.textContent = 'Copy Script Code';
+                    if (label) label.textContent = 'Copy Script Code';
                 }, 2500);
             }).catch(function() {
-                const snip = document.getElementById('code-snippet');
-                if (snip) {
+                const box = document.getElementById('embed-script-box');
+                if (box) {
                     const range = document.createRange();
-                    range.selectNode(snip);
+                    range.selectNode(box);
                     window.getSelection().removeAllRanges();
                     window.getSelection().addRange(range);
                 }
