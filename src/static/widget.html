@@ -54,20 +54,26 @@
         html, body {
             height: 100%;
             width: 100%;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
+            position: fixed;
+            inset: 0;
             background: #f8fafc;
+            -webkit-overflow-scrolling: touch;
         }
 
         .widget-card {
             display: flex;
             flex-direction: column;
             height: 100%;
-            height: 100dvh;
+            min-height: 0; /* Critical for inner scrolling */
             width: 100%;
             background: var(--bg-card);
             border-radius: 0;
             overflow: hidden;
             position: relative;
+            flex: 1 1 0%;
         }
 
         /* Top signature accent strip matching portal */
@@ -124,21 +130,23 @@
 
         .sidebar-toggle-btn {
             display: none;
-            background: transparent;
-            border: 1px solid transparent;
-            color: #475569;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
             cursor: pointer;
-            padding: 6px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             transition: all 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         .sidebar-toggle-btn:hover {
             background: #f1f5f9;
             color: #0f172a;
-            border-color: #e2e8f0;
+            border-color: #94a3b8;
         }
 
         .tpc-avatar-wrap {
@@ -313,13 +321,15 @@
 
         /* --- Chat Message Area --- */
         .chat-messages {
-            flex: 1;
+            flex: 1 1 0%;
+            min-height: 0; /* CRITICAL: Enables scrolling inside flexbox */
             padding: 1rem;
-            overflow-y: auto;
+            overflow-y: auto !important;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            display: flex;
-            flex-direction: column;
             background: var(--bg-chat);
+            touch-action: pan-y !important;
+            overscroll-behavior-y: contain;
         }
 
         .messages-inner-wrap {
@@ -327,6 +337,7 @@
             flex-direction: column;
             gap: 1rem;
             width: 100%;
+            padding-bottom: 0.5rem;
         }
 
         .chat-messages::-webkit-scrollbar {
@@ -867,8 +878,8 @@
         .app-layout {
             display: flex;
             height: 100%;
-            height: 100dvh;
             width: 100%;
+            min-height: 0;
             overflow: hidden;
             background: #f8fafc;
             position: relative;
@@ -884,9 +895,9 @@
 
         .is-standalone-view .app-layout {
             display: flex;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
         }
 
         .is-standalone-view .ai-sidebar {
@@ -897,30 +908,30 @@
             background: #ffffff;
             border-right: 1px solid var(--border-color);
             flex-shrink: 0;
-            transition: width 0.25s ease, margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             z-index: 100;
             box-shadow: 2px 0 12px rgba(15, 23, 42, 0.03);
         }
 
-        .is-standalone-view.sidebar-collapsed .ai-sidebar {
-            margin-left: -280px;
+        /* Desktop Sidebar Collapse (Classes applied to html, body, or #app-layout) */
+        @media (min-width: 769px) {
+            html.sidebar-collapsed .ai-sidebar,
+            body.sidebar-collapsed .ai-sidebar,
+            #app-layout.sidebar-collapsed .ai-sidebar,
+            .sidebar-collapsed .ai-sidebar {
+                margin-left: -280px !important;
+            }
         }
 
         .is-standalone-view .sidebar-toggle-btn {
             display: inline-flex !important;
         }
 
-        .is-standalone-view .standalone-new-btn {
-            display: inline-flex !important;
-        }
-
-        .is-standalone-view .portal-back-btn {
-            display: inline-flex !important;
-        }
-
+        /* In standalone view, hide popup close buttons */
         .is-standalone-view .popup-reset-btn,
-        .is-standalone-view .btn-close-widget {
+        .is-standalone-view .btn-close-widget,
+        .is-standalone-view .mobile-back-btn {
             display: none !important;
         }
 
@@ -929,15 +940,19 @@
             box-shadow: none !important;
             border: none !important;
             background: #f8fafc !important;
-            flex: 1;
-            min-width: 0;
-            height: 100%;
+            flex: 1 1 0% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         .is-standalone-view .widget-header {
             padding: 0.85rem 1.75rem !important;
             border-bottom: 1px solid var(--border-color);
             background: #ffffff;
+            flex-shrink: 0;
         }
 
         .is-standalone-view .header-inner-wrap {
@@ -945,10 +960,17 @@
             margin: 0 auto;
         }
 
-        /* Standalone Messages Area: Centered readable column */
+        /* Standalone Messages Area: Centered readable column with smooth touch scroll */
         .is-standalone-view .chat-messages {
             background: #f8fafc;
             padding: 2rem 1.5rem 1rem;
+            flex: 1 1 0% !important;
+            min-height: 0 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y !important;
+            overscroll-behavior-y: contain;
         }
 
         .is-standalone-view .messages-inner-wrap {
@@ -1276,39 +1298,44 @@
         /* Mobile drawer behavior for standalone view */
         @media (max-width: 768px) {
             .is-standalone-view .ai-sidebar {
-                position: fixed;
+                position: fixed !important;
                 left: 0;
                 top: 0;
                 bottom: 0;
+                height: 100%;
                 width: 280px;
                 box-shadow: 0 10px 40px rgba(0,0,0,0.25);
                 transform: translateX(-100%);
+                margin-left: 0 !important;
                 transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: 1000;
             }
 
-            .is-standalone-view.sidebar-open .ai-sidebar {
-                transform: translateX(0);
+            html.sidebar-open .ai-sidebar,
+            body.sidebar-open .ai-sidebar,
+            #app-layout.sidebar-open .ai-sidebar,
+            .sidebar-open .ai-sidebar {
+                transform: translateX(0) !important;
             }
 
             .is-standalone-view .sidebar-close-toggle {
-                display: flex;
+                display: flex !important;
             }
 
-            .is-standalone-view.sidebar-open .sidebar-backdrop {
-                display: block;
+            html.sidebar-open .sidebar-backdrop,
+            body.sidebar-open .sidebar-backdrop,
+            #app-layout.sidebar-open .sidebar-backdrop,
+            .sidebar-open .sidebar-backdrop {
+                display: block !important;
                 position: fixed;
                 inset: 0;
                 background: rgba(15, 23, 42, 0.45);
                 backdrop-filter: blur(3px);
-                z-index: 90;
+                z-index: 990;
             }
 
-            .is-standalone-view .standalone-new-btn .action-btn-label {
-                display: none;
-            }
-
-            .is-standalone-view .portal-back-btn span {
-                display: none;
+            .is-standalone-view .chat-messages {
+                padding: 1rem 0.85rem 1rem !important;
             }
         }
     </style>
@@ -1384,19 +1411,23 @@
                     </button>
                 </div>
 
-                <div class="sidebar-group-label" style="margin-top: 1.25rem;">STUDENT RESOURCES</div>
-                <div class="sidebar-nav-list">
-                    <button type="button" class="sidebar-topic-btn" onclick="askQuestion('What are the OSAS clearance requirements?')">
-                        <span class="topic-icon">📋</span>
-                        <span class="topic-label">OSAS certificate guidelines</span>
+                <div class="sidebar-group-label" style="margin-top: 1.25rem;">RECENT CONVERSATIONS</div>
+                <div class="sidebar-nav-list" id="sidebar-history-list">
+                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What are the steps to submit clearance?')">
+                        <span class="topic-icon">💬</span>
+                        <span class="topic-label">Clearance submission steps</span>
                     </button>
-                    <button type="button" class="sidebar-topic-btn" onclick="askQuestion('How to resolve College Library property accountability?')">
-                        <span class="topic-icon">📚</span>
-                        <span class="topic-label">Library property holds</span>
+                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What are the 14 signatory offices?')">
+                        <span class="topic-icon">💬</span>
+                        <span class="topic-label">14 Signatory offices</span>
                     </button>
-                    <button type="button" class="sidebar-topic-btn" onclick="askQuestion('Where is the College Clinic located and what are their clearance hours?')">
-                        <span class="topic-icon">🏥</span>
-                        <span class="topic-label">Clinic medical clearance</span>
+                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What happens if an office rejects my clearance request?')">
+                        <span class="topic-icon">💬</span>
+                        <span class="topic-label">Rejection & re-evaluation</span>
+                    </button>
+                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('Can I clear if I have an unpaid tuition balance?')">
+                        <span class="topic-icon">💬</span>
+                        <span class="topic-label">Tuition balance policy</span>
                     </button>
                 </div>
             </div>
@@ -1431,11 +1462,12 @@
             <header class="widget-header">
                 <div class="header-inner-wrap">
                     <div class="header-left">
-                        <!-- Toggle Sidebar Button in Standalone View -->
-                        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="9" y1="3" x2="9" y2="21"></line>
+                        <!-- Toggle Sidebar Button (Working Burger Button) in Standalone View -->
+                        <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
                             </svg>
                         </button>
 
@@ -1480,24 +1512,7 @@
                     </div>
 
                     <div class="header-actions">
-                        <!-- Standalone View Action Buttons -->
-                        <button type="button" class="header-btn standalone-new-btn" onclick="resetChat()" title="Start New Chat">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            <span class="action-btn-label">New Chat</span>
-                        </button>
-
-                        <a href="/" class="portal-back-btn" title="Return to Portal Dashboard">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="19" y1="12" x2="5" y2="12"></line>
-                                <polyline points="12 19 5 12 12 5"></polyline>
-                            </svg>
-                            <span>Portal Dashboard</span>
-                        </a>
-
-                        <!-- Popup Mode Buttons: Clean essential controls only (no call button!) -->
+                        <!-- Popup Mode Buttons: Clean essential controls only -->
                         <button type="button" class="header-btn popup-reset-btn" onclick="resetChat()" title="New conversation">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -1633,24 +1648,75 @@
 
         // Toggle Modern AI Sidebar (desktop collapse & mobile drawer)
         function toggleSidebar(forceState) {
-            const layout = document.getElementById('app-layout');
             const isMobile = window.innerWidth <= 768;
-            if (!layout) return;
+            const body = document.body;
+            const docEl = document.documentElement;
+            const layout = document.getElementById('app-layout');
 
             if (isMobile) {
+                let open;
                 if (typeof forceState === 'boolean') {
-                    if (forceState) layout.classList.add('sidebar-open');
-                    else layout.classList.remove('sidebar-open');
+                    open = forceState;
                 } else {
-                    layout.classList.toggle('sidebar-open');
+                    open = !body.classList.contains('sidebar-open');
+                }
+                if (open) {
+                    body.classList.add('sidebar-open');
+                    docEl.classList.add('sidebar-open');
+                    if (layout) layout.classList.add('sidebar-open');
+                } else {
+                    body.classList.remove('sidebar-open');
+                    docEl.classList.remove('sidebar-open');
+                    if (layout) layout.classList.remove('sidebar-open');
                 }
             } else {
+                let collapsed;
                 if (typeof forceState === 'boolean') {
-                    if (forceState) layout.classList.remove('sidebar-collapsed');
-                    else layout.classList.add('sidebar-collapsed');
+                    collapsed = !forceState;
                 } else {
-                    layout.classList.toggle('sidebar-collapsed');
+                    collapsed = !body.classList.contains('sidebar-collapsed');
                 }
+                if (collapsed) {
+                    body.classList.add('sidebar-collapsed');
+                    docEl.classList.add('sidebar-collapsed');
+                    if (layout) layout.classList.add('sidebar-collapsed');
+                } else {
+                    body.classList.remove('sidebar-collapsed');
+                    docEl.classList.remove('sidebar-collapsed');
+                    if (layout) layout.classList.remove('sidebar-collapsed');
+                }
+            }
+        }
+
+        // Add user query to Recent Conversations in sidebar
+        function addChatToHistory(query) {
+            if (!query) return;
+            const clean = query.trim();
+            if (!clean) return;
+            const list = document.getElementById('sidebar-history-list');
+            if (!list) return;
+
+            // Avoid duplicate item at top
+            const firstItem = list.querySelector('.history-item .topic-label');
+            if (firstItem && firstItem.textContent.trim().toLowerCase() === clean.toLowerCase()) {
+                return;
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'sidebar-topic-btn history-item';
+            btn.onclick = function() {
+                askQuestion(clean);
+            };
+            btn.innerHTML = `
+                <span class="topic-icon">💬</span>
+                <span class="topic-label">${escapeHtml(clean)}</span>
+            `;
+            list.insertBefore(btn, list.firstChild);
+
+            // Keep history at a maximum of 10 items
+            while (list.children.length > 10) {
+                list.removeChild(list.lastChild);
             }
         }
 
@@ -1693,6 +1759,9 @@
         }
 
         function askQuestion(text) {
+            if (window.innerWidth <= 768) {
+                toggleSidebar(false);
+            }
             const input = document.getElementById('user-query-input');
             if (input) {
                 input.value = text;
@@ -1760,6 +1829,7 @@
             if (!query) return false;
 
             input.value = '';
+            addChatToHistory(query);
             appendUserMessage(query);
 
             const sendBtn = document.getElementById('send-button');
