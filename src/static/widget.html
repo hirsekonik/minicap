@@ -122,12 +122,6 @@
             flex-shrink: 0;
         }
 
-        @media (max-width: 640px) {
-            .mobile-back-btn {
-                display: flex !important;
-            }
-        }
-
         .sidebar-toggle-btn {
             display: none;
             background: #ffffff;
@@ -1239,6 +1233,9 @@
             border: 1px solid #e2e8f0;
             background: #f8fafc;
             transition: all 0.15s ease;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
         }
 
         .sidebar-back-portal-link:hover {
@@ -1433,13 +1430,13 @@
             </div>
 
             <div class="sidebar-bottom">
-                <a href="/" class="sidebar-back-portal-link" title="Return to Portal Dashboard">
+                <button type="button" class="sidebar-back-portal-link" onclick="window.location.assign('/')" title="Return to Portal Dashboard">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
                     <span>Return to Student Portal</span>
-                </a>
+                </button>
 
                 <div class="sidebar-user-pill">
                     <div class="user-pill-avatar">KA</div>
@@ -1468,14 +1465,6 @@
                                 <line x1="3" y1="6" x2="21" y2="6"></line>
                                 <line x1="3" y1="12" x2="21" y2="12"></line>
                                 <line x1="3" y1="18" x2="21" y2="18"></line>
-                            </svg>
-                        </button>
-
-                        <!-- Mobile back button to close popup on small screens -->
-                        <button type="button" class="mobile-back-btn" onclick="closeWidget()" title="Back">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="19" y1="12" x2="5" y2="12"></line>
-                                <polyline points="12 19 5 12 12 5"></polyline>
                             </svg>
                         </button>
 

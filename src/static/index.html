@@ -994,6 +994,35 @@
             transform: scale(0.95);
         }
 
+        .sim-chatbot-btn .sim-launcher-icon,
+        .sim-chatbot-btn .sim-launcher-close {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .sim-chatbot-btn .sim-launcher-icon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .sim-chatbot-btn .sim-launcher-close {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg);
+        }
+
+        .sim-chatbot-btn.open .sim-launcher-icon {
+            opacity: 0;
+            transform: scale(0.5) rotate(90deg);
+        }
+
+        .sim-chatbot-btn.open .sim-launcher-close {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
         .sim-pulse-dot {
             position: absolute;
             top: 1px;
@@ -1004,29 +1033,43 @@
             background: #10b981;
             border: 2.5px solid #ffffff;
             box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+            transition: opacity 0.2s ease;
         }
 
-        /* In-Phone Simulator Chat Overlay (Native Mobile Pop-up) */
+        .sim-chatbot-btn.open .sim-pulse-dot {
+            opacity: 0;
+        }
+
+        /* In-Phone Simulator Chat Pop-up (Floats like desktop popup card inside phone) */
         .sim-chat-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
+            bottom: 74px; /* Floats directly above bottom nav bar */
+            left: 12px;
+            right: 12px;
+            height: 560px;
+            max-height: calc(100% - 90px);
             background: #ffffff;
-            z-index: 2500 !important; /* Fully covers viewport and bottom nav */
+            z-index: 2000;
             display: flex;
             flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(15, 23, 42, 0.12);
             overflow: hidden;
-            border-radius: inherit;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.92) translateY(20px);
+            transform-origin: bottom right;
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.25s;
         }
 
         .sim-chat-overlay.active {
-            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
         }
 
         .sim-chat-frame {
@@ -1036,7 +1079,7 @@
             flex: 1 1 0%;
             min-height: 0;
             display: block;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         /* Embed Code Modal */
@@ -1167,14 +1210,14 @@
                 </svg>
                 Copy Embed Script
             </button>
-            <a href="/widget" class="int-btn" title="Open Standalone View">
+            <button type="button" class="int-btn" onclick="window.location.assign('/widget')" title="Switch to Standalone View">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
                 Standalone View
-            </a>
+            </button>
         </div>
     </div>
 
@@ -1495,10 +1538,18 @@
                         <button type="button" class="sim-teaser-close" onclick="closeSimTeaser(event)" title="Dismiss">✕</button>
                     </div>
 
-                    <button type="button" class="sim-chatbot-btn" id="sim-chatbot-btn" onclick="toggleSimChat()" title="Open Clearance AI Assistant">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
+                    <button type="button" class="sim-chatbot-btn" id="sim-chatbot-btn" onclick="toggleSimChat()" title="Toggle Clearance AI Assistant">
+                        <div class="sim-launcher-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="sim-launcher-close">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </div>
                         <div class="sim-pulse-dot"></div>
                     </button>
                 </div>
@@ -1631,15 +1682,17 @@
         // --- In-Simulator Chat Control ---
         function toggleSimChat(forceState) {
             const overlay = document.getElementById('sim-chat-overlay');
-            const viewport = document.querySelector('.phone-screen-viewport');
+            const btn = document.getElementById('sim-chatbot-btn');
+            const teaser = document.getElementById('sim-chatbot-teaser');
             if (!overlay) return;
             const willOpen = typeof forceState === 'boolean' ? forceState : !overlay.classList.contains('active');
             if (willOpen) {
                 overlay.classList.add('active');
-                if (viewport) viewport.style.overflow = 'hidden';
+                if (btn) btn.classList.add('open');
+                if (teaser) teaser.style.display = 'none';
             } else {
                 overlay.classList.remove('active');
-                if (viewport) viewport.style.overflow = 'auto';
+                if (btn) btn.classList.remove('open');
             }
         }
 

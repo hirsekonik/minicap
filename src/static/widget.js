@@ -225,23 +225,23 @@
             }
 
             #tpc-widget-container {
-                bottom: 0 !important;
-                right: 0 !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                height: 100% !important;
-                height: 100dvh !important;
-                max-height: 100dvh !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-                transform: translateY(100%);
-                transform-origin: center bottom;
+                bottom: 84px !important;
+                right: 12px !important;
+                left: 12px !important;
+                top: auto !important;
+                width: auto !important;
+                max-width: calc(100vw - 24px) !important;
+                height: 560px !important;
+                max-height: calc(100vh - 100px) !important;
+                max-height: calc(100dvh - 100px) !important;
+                border-radius: 20px !important;
+                box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.38), 0 0 0 1px rgba(15, 23, 42, 0.1) !important;
+                transform: scale(0.92) translateY(16px);
+                transform-origin: bottom right;
             }
 
             #tpc-widget-container.active {
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
     `;
