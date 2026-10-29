@@ -158,36 +158,44 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
             actions = getattr(m, 'supported_actions', []) or []
             if not actions or 'generateContent' in actions:
                 m_name = (m.name or "").replace("models/", "").strip()
-                if m_name and "gemini" in m_name.lower():
+                # Exclude specialized non-text-generation models
+                if any(x in m_name.lower() for x in ['audio', 'tts', 'image', 'clip', 'live', 'transcribe', 'embedding', 'robotics']):
+                    continue
+                if m_name and ("gemini" in m_name.lower() or "gemma" in m_name.lower()):
                     discovered_models.append(m_name)
         print(f"[Gemini Discovery] Found {len(discovered_models)} models: {discovered_models}", flush=True)
     except Exception as disc_err:
         print(f"[Gemini Discovery Warning] Could not list models: {disc_err}", flush=True)
 
-    # Prioritized model candidates
+    # Prioritized model candidates (current active generation models)
     default_candidates = [
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-latest',
-        'gemini-1.5-flash-001',
-        'gemini-1.5-flash-002',
-        'gemini-1.5-flash-8b',
+        'gemini-3.8-flash',
+        'gemini-3.5-flash',
+        'gemini-flash-latest',
+        'gemini-3.5-flash-lite',
+        'gemini-flash-lite-latest',
+        'gemini-pro-latest',
         'gemini-2.0-flash',
-        'gemini-2.0-flash-exp',
-        'gemini-2.0-flash-lite',
-        'gemini-1.5-pro',
-        'gemini-1.5-pro-latest',
-        'gemini-1.0-pro',
-        'gemini-pro'
+        'gemini-1.5-flash'
     ]
 
+    # Exclude models known to be deprecated or unavailable to new users
+    retired_models = {'gemini-pro', 'gemini-1.0-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro'}
+    filtered_discovered = [m for m in discovered_models if m not in retired_models]
+
     candidate_models = []
-    if discovered_models:
-        flash_models = [m for m in discovered_models if 'flash' in m.lower()]
-        other_models = [m for m in discovered_models if 'flash' not in m.lower()]
-        candidate_models = flash_models + other_models
+    # Place top recommended models at the front
+    for top_m in ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest']:
+        if top_m in filtered_discovered and top_m not in candidate_models:
+            candidate_models.append(top_m)
+
+    if filtered_discovered:
+        flash_models = [m for m in filtered_discovered if 'flash' in m.lower() and m not in candidate_models]
+        other_models = [m for m in filtered_discovered if 'flash' not in m.lower() and m not in candidate_models]
+        candidate_models += flash_models + other_models
 
     for def_m in default_candidates:
-        if def_m not in candidate_models:
+        if def_m not in candidate_models and def_m not in retired_models:
             candidate_models.append(def_m)
 
     last_err = None
@@ -225,6 +233,11 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
             print(f"[Gemini Error on {model_name}]: {err_msg}", flush=True)
             attempted_log.append(f"{model_name}: {err_msg}")
             last_err = err_msg
+
+            # Stop immediately if this project has an account-level billing or permission restriction
+            if "free tier is not available" in err_msg.lower() or "aistudio.google.com/billing" in err_msg.lower():
+                break
+
             # Try once more without system_instruction in config if supported methods differ
             try:
                 combined_prompt = f"System Instruction:\n{system_prompt}\n\nContext:\n{retrieved_context}\n\nQuestion: {query}"
@@ -245,10 +258,29 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
                 pass
             continue
 
+    is_billing_err = any("free tier is not available" in l.lower() or "aistudio.google.com/billing" in l.lower() for l in attempted_log)
+    is_quota_err = any("429" in l or "resource_exhausted" in l.lower() for l in attempted_log)
+
+    if is_billing_err:
+        guide_msg = (
+            "Gemini API Project Notice (403 Permission Denied):\n"
+            "The Google Cloud project linked to this API key does not have the free tier available. "
+            "To enable live Gemini inference:\n"
+            "1. Create a free API key at https://aistudio.google.com/app/apikey using a personal @gmail.com account (choose 'Create key in new project'), or\n"
+            "2. Enable billing on your current Google project at https://aistudio.google.com/billing."
+        )
+    elif is_quota_err:
+        guide_msg = "Gemini API Quota Exceeded (429 Rate Limit): Your API key has temporarily reached its per-minute or daily quota limit. Please retry in a few moments or use a key with available quota."
+    else:
+        guide_msg = f"Unable to complete query due to API error: {last_err or 'all model candidates exhausted'}"
+
+    if retrieved_docs:
+        guide_msg += "\n\nInstitutional Handbook Guidance (Extracted from ChromaDB Knowledge Base):\n" + "\n---\n".join(retrieved_docs[:2])
+
     return {
-        "answer": f"Unable to complete query due to API error: {last_err or 'all model candidates exhausted'}",
+        "answer": guide_msg,
         "retrieved_chunks": retrieved_docs,
-        "model_used": "none",
+        "model_used": "chromadb_fallback" if retrieved_docs else "none",
         "error": f"Attempted models ({len(attempted_log)}): {'; '.join(attempted_log[:3])}"
     }
 
