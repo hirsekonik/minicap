@@ -1844,21 +1844,31 @@
                     body: JSON.stringify({ query: query })
                 });
 
-                const data = await response.json();
+                const rawText = await response.text();
+                let data = null;
+                try {
+                    data = JSON.parse(rawText);
+                } catch (jsonErr) {
+                    data = {
+                        answer: "The assistant server is temporarily busy or reconnecting. Please retry your question in a moment.",
+                        retrieved_chunks: []
+                    };
+                }
+
                 if (loadingBubble && loadingBubble.parentNode) {
                     loadingBubble.parentNode.removeChild(loadingBubble);
                 }
 
-                if (response.ok) {
-                    appendBotMessage(data.answer, data.retrieved_chunks, query);
+                if (response.ok && data) {
+                    appendBotMessage(data.answer, data.retrieved_chunks || [], query);
                 } else {
-                    appendBotMessage('Error: ' + (data.detail || 'Could not fetch response'), [], query);
+                    appendBotMessage(data && data.answer ? data.answer : 'The assistant is temporarily reconnecting. Please try asking again in a moment.', [], query);
                 }
             } catch (err) {
                 if (loadingBubble && loadingBubble.parentNode) {
                     loadingBubble.parentNode.removeChild(loadingBubble);
                 }
-                appendBotMessage('Network Error: ' + err.message, [], query);
+                appendBotMessage('Connection Notice: The assistant is temporarily reconnecting. Please try asking again in a moment.', [], query);
             } finally {
                 if (sendBtn) sendBtn.disabled = false;
                 input.focus();

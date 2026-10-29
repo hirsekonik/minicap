@@ -67,6 +67,13 @@ SYSTEM_PROMPT = (
     "   14. Office of the College President (Sole final approver with `is_final_approver` flag at Sort Order 14)\n\n"
     "CRITICAL RULE ON SIGNATORIES:\n"
     "Whenever a student asks 'What are the 14 signatory offices?', 'Who are the signatories?', or questions about required clearance departments, you MUST list all 14 official offices enumerated above, clearly organized under Student Services (1-9) and Administration (10-14). Never list only the 9 traditional handbook offices; the web-based system officially requires all 14.\n\n"
+    "STRICT OUT-OF-SCOPE & ANTI-HALLUCINATION GUARDRAIL:\n"
+    "You are exclusively dedicated to Talibon Polytechnic College (TPC) Student Clearance and Student Handbook policies.\n"
+    "If a user asks about topics completely unrelated to TPC, college clearance, student accountabilities, or campus guidelines (e.g., booking commercial airline flights, personal travel, cooking recipes, weather, celebrity gossip, general coding, non-TPC external businesses):\n"
+    "1. Politely decline to answer the out-of-scope question.\n"
+    "2. State clearly: 'As the official TPC Student Clearance Assistant, I am dedicated exclusively to helping you with Talibon Polytechnic College clearance procedures, signatory requirements, accountabilities, and student handbook guidelines.'\n"
+    "3. Redirect the student with relevant clearance options (e.g., 'Feel free to ask me about submitting a clearance request, tracking the 14 signatory offices, or resolving accountabilities at the Library, Cashier, or OSAS.').\n"
+    "Do NOT under any circumstances provide instructions, advice, or answers for external, non-TPC topics.\n\n"
     "Communication & Formatting Standards (Modern Tech/Product Aesthetic):\n"
     "1. **Tone & Personality**: Warm, confident, supportive, and direct. Avoid robotic boilerplate (never say 'Based on the provided context...' or 'According to document chunk...'). Speak naturally with the authority and helpfulness of an experienced college student advisor.\n"
     "2. **Structure & Visual Hierarchy**:\n"
@@ -171,24 +178,8 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
     user_prompt = f"Context:\n{retrieved_context}\n\nQuestion: {query}"
     client = genai.Client(api_key=api_key)
 
-    # Dynamically query available models for this specific API key
-    discovered_models = []
-    try:
-        for m in client.models.list():
-            actions = getattr(m, 'supported_actions', []) or []
-            if not actions or 'generateContent' in actions:
-                m_name = (m.name or "").replace("models/", "").strip()
-                # Exclude specialized non-text-generation models
-                if any(x in m_name.lower() for x in ['audio', 'tts', 'image', 'clip', 'live', 'transcribe', 'embedding', 'robotics']):
-                    continue
-                if m_name and ("gemini" in m_name.lower() or "gemma" in m_name.lower()):
-                    discovered_models.append(m_name)
-        print(f"[Gemini Discovery] Found {len(discovered_models)} models: {discovered_models}", flush=True)
-    except Exception as disc_err:
-        print(f"[Gemini Discovery Warning] Could not list models: {disc_err}", flush=True)
-
     # Prioritized model candidates (current active generation models)
-    default_candidates = [
+    candidate_models = [
         'gemini-3.8-flash',
         'gemini-3.5-flash',
         'gemini-flash-latest',
@@ -198,25 +189,6 @@ def query_rag_engine(collection, query: str, system_prompt: str, api_key: str = 
         'gemini-2.0-flash',
         'gemini-1.5-flash'
     ]
-
-    # Exclude models known to be deprecated or unavailable to new users
-    retired_models = {'gemini-pro', 'gemini-1.0-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro'}
-    filtered_discovered = [m for m in discovered_models if m not in retired_models]
-
-    candidate_models = []
-    # Place top recommended models at the front
-    for top_m in ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest']:
-        if top_m in filtered_discovered and top_m not in candidate_models:
-            candidate_models.append(top_m)
-
-    if filtered_discovered:
-        flash_models = [m for m in filtered_discovered if 'flash' in m.lower() and m not in candidate_models]
-        other_models = [m for m in filtered_discovered if 'flash' not in m.lower() and m not in candidate_models]
-        candidate_models += flash_models + other_models
-
-    for def_m in default_candidates:
-        if def_m not in candidate_models and def_m not in retired_models:
-            candidate_models.append(def_m)
 
     last_err = None
     attempted_log = []
