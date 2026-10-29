@@ -1211,6 +1211,73 @@
             flex: 1;
         }
 
+        .sidebar-history-row {
+            display: flex;
+            align-items: center;
+            position: relative;
+            border-radius: 10px;
+            transition: all 0.15s ease;
+        }
+
+        .sidebar-history-row:hover {
+            background: #eff6ff;
+        }
+
+        .sidebar-history-row.active {
+            background: #e0e7ff;
+        }
+
+        .sidebar-history-row.active .sidebar-topic-btn {
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        .sidebar-history-row .sidebar-topic-btn {
+            flex: 1;
+            padding-right: 2rem;
+            min-width: 0;
+        }
+
+        .history-delete-btn {
+            position: absolute;
+            right: 0.35rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            transition: all 0.15s ease;
+            z-index: 2;
+        }
+
+        .sidebar-history-row:hover .history-delete-btn {
+            display: flex;
+        }
+
+        .history-delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .sidebar-empty-history {
+            padding: 0.75rem 0.6rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-style: italic;
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #e2e8f0;
+            margin: 0.25rem 0;
+            line-height: 1.4;
+        }
+
         .sidebar-bottom {
             padding: 0.85rem 0.85rem 1rem;
             border-top: 1px solid #f1f5f9;
@@ -1410,22 +1477,7 @@
 
                 <div class="sidebar-group-label" style="margin-top: 1.25rem;">RECENT CONVERSATIONS</div>
                 <div class="sidebar-nav-list" id="sidebar-history-list">
-                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What are the steps to submit clearance?')">
-                        <span class="topic-icon">💬</span>
-                        <span class="topic-label">Clearance submission steps</span>
-                    </button>
-                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What are the 14 signatory offices?')">
-                        <span class="topic-icon">💬</span>
-                        <span class="topic-label">14 Signatory offices</span>
-                    </button>
-                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('What happens if an office rejects my clearance request?')">
-                        <span class="topic-icon">💬</span>
-                        <span class="topic-label">Rejection & re-evaluation</span>
-                    </button>
-                    <button type="button" class="sidebar-topic-btn history-item" onclick="askQuestion('Can I clear if I have an unpaid tuition balance?')">
-                        <span class="topic-icon">💬</span>
-                        <span class="topic-label">Tuition balance policy</span>
-                    </button>
+                    <!-- Populated dynamically from real conversation history -->
                 </div>
             </div>
 
@@ -1688,35 +1740,230 @@
             }
         }
 
-        // Add user query to Recent Conversations in sidebar
-        function addChatToHistory(query) {
-            if (!query) return;
-            const clean = query.trim();
-            if (!clean) return;
+        // --- REAL CONVERSATION HISTORY & SESSION SYSTEM (localStorage) ---
+        const CHAT_STORAGE_KEY = 'tpc_clearance_chat_sessions_v1';
+        let currentSessionId = null;
+        let currentSessionMessages = [];
+
+        function getStoredSessions() {
+            try {
+                const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.warn('Failed to parse chat sessions:', e);
+                return [];
+            }
+        }
+
+        function saveStoredSessions(sessions) {
+            try {
+                localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(sessions));
+            } catch (e) {
+                console.warn('Failed to save chat sessions:', e);
+            }
+        }
+
+        function renderSidebarHistory() {
             const list = document.getElementById('sidebar-history-list');
             if (!list) return;
 
-            // Avoid duplicate item at top
-            const firstItem = list.querySelector('.history-item .topic-label');
-            if (firstItem && firstItem.textContent.trim().toLowerCase() === clean.toLowerCase()) {
+            const sessions = getStoredSessions();
+            if (!sessions || sessions.length === 0) {
+                list.innerHTML = `
+                    <div class="sidebar-empty-history">
+                        <span>No recent conversations yet.<br>Ask a question to start history.</span>
+                    </div>
+                `;
                 return;
             }
 
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'sidebar-topic-btn history-item';
-            btn.onclick = function() {
-                askQuestion(clean);
-            };
-            btn.innerHTML = `
-                <span class="topic-icon">💬</span>
-                <span class="topic-label">${escapeHtml(clean)}</span>
-            `;
-            list.insertBefore(btn, list.firstChild);
+            list.innerHTML = '';
+            sessions.slice(0, 15).forEach(function(sess) {
+                const row = document.createElement('div');
+                row.className = 'sidebar-history-row' + (sess.id === currentSessionId ? ' active' : '');
 
-            // Keep history at a maximum of 10 items
-            while (list.children.length > 10) {
-                list.removeChild(list.lastChild);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'sidebar-topic-btn history-item';
+                btn.title = sess.title;
+                btn.onclick = function() {
+                    loadChatSession(sess.id);
+                };
+                btn.innerHTML = `
+                    <span class="topic-icon">💬</span>
+                    <span class="topic-label">${escapeHtml(sess.title)}</span>
+                `;
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'history-delete-btn';
+                delBtn.title = 'Delete conversation';
+                delBtn.innerHTML = '✕';
+                delBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    deleteChatSession(sess.id);
+                };
+
+                row.appendChild(btn);
+                row.appendChild(delBtn);
+                list.appendChild(row);
+            });
+        }
+
+        function startOrUpdateSession(userQuery) {
+            const clean = (userQuery || '').trim();
+            if (!clean) return;
+
+            const sessions = getStoredSessions();
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            if (!currentSessionId) {
+                currentSessionId = 'sess_' + Date.now();
+                const sessionTitle = clean.length > 30 ? clean.substring(0, 30) + '...' : clean;
+                sessions.unshift({
+                    id: currentSessionId,
+                    title: sessionTitle,
+                    createdAt: Date.now(),
+                    messages: []
+                });
+            }
+
+            currentSessionMessages.push({
+                sender: 'user',
+                text: clean,
+                time: timeStr
+            });
+
+            const idx = sessions.findIndex(function(s) { return s.id === currentSessionId; });
+            if (idx !== -1) {
+                sessions[idx].messages = currentSessionMessages;
+                sessions[idx].updatedAt = Date.now();
+            }
+            saveStoredSessions(sessions);
+            renderSidebarHistory();
+        }
+
+        function saveBotReplyToSession(answer, chunks) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            currentSessionMessages.push({
+                sender: 'bot',
+                text: answer,
+                chunks: chunks || [],
+                time: timeStr
+            });
+
+            if (currentSessionId) {
+                const sessions = getStoredSessions();
+                const idx = sessions.findIndex(function(s) { return s.id === currentSessionId; });
+                if (idx !== -1) {
+                    sessions[idx].messages = currentSessionMessages;
+                    sessions[idx].updatedAt = Date.now();
+                    saveStoredSessions(sessions);
+                }
+            }
+            renderSidebarHistory();
+        }
+
+        function loadChatSession(sessionId) {
+            const sessions = getStoredSessions();
+            const session = sessions.find(function(s) { return s.id === sessionId; });
+            if (!session) return;
+
+            currentSessionId = session.id;
+            currentSessionMessages = session.messages || [];
+
+            const inner = document.getElementById('messages-inner-wrap');
+            const chat = document.getElementById('chat-messages');
+            if (!inner) return;
+
+            inner.innerHTML = '';
+
+            const sessDate = session.createdAt ? new Date(session.createdAt) : new Date();
+            const timeStr = 'Session • ' + sessDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeEl = document.createElement('div');
+            timeEl.className = 'message-timestamp';
+            timeEl.textContent = timeStr;
+            inner.appendChild(timeEl);
+
+            currentSessionMessages.forEach(function(msg) {
+                if (msg.sender === 'user') {
+                    const div = document.createElement('div');
+                    div.className = 'message-bubble user-message';
+                    div.textContent = msg.text;
+                    inner.appendChild(div);
+                } else if (msg.sender === 'bot') {
+                    renderBotMessageStatic(msg.text, msg.chunks, msg.time);
+                }
+            });
+
+            if (chat) chat.scrollTop = chat.scrollHeight;
+            renderSidebarHistory();
+
+            if (window.innerWidth <= 768) {
+                toggleSidebar(false);
+            }
+        }
+
+        function renderBotMessageStatic(answer, chunks, timeStr) {
+            const inner = document.getElementById('messages-inner-wrap');
+            if (!inner) return;
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble bot-message';
+
+            let sourcesHtml = '';
+            if (chunks && chunks.length > 0) {
+                const snippet = chunks.map(function(c, i) {
+                    return '[Reference ' + (i + 1) + ']\n' + c.trim();
+                }).join('\n\n' + '='.repeat(30) + '\n\n');
+
+                sourcesHtml = '<button type="button" class="sources-toggle" onclick="toggleSources(this)">' +
+                              '📖 Verified References (' + chunks.length + ') &darr;' +
+                              '</button>' +
+                              '<div class="sources-drawer">' + escapeHtml(snippet) + '</div>';
+            }
+
+            bubble.innerHTML = `
+                <div class="bot-meta">
+                    <div class="bot-meta-left">
+                        <span class="bot-tag">TPC Assistant</span>
+                        <span>Official Guidance</span>
+                    </div>
+                </div>
+                <div class="bot-text-content">${parseMarkdown(answer || '')}</div>
+                ${sourcesHtml}
+                <div class="message-action-bar">
+                    <span style="font-size:0.65rem; color:#94a3b8; margin-right:auto;">${timeStr || ''}</span>
+                    <button type="button" class="msg-action-btn" onclick="copyMessageText(this)" title="Copy answer">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copy</span>
+                    </button>
+                    <button type="button" class="msg-action-btn" onclick="speakMessageText(this)" title="Read aloud">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                        <span>Listen</span>
+                    </button>
+                </div>
+            `;
+            inner.appendChild(bubble);
+        }
+
+        function deleteChatSession(sessionId) {
+            let sessions = getStoredSessions();
+            sessions = sessions.filter(function(s) { return s.id !== sessionId; });
+            saveStoredSessions(sessions);
+
+            if (currentSessionId === sessionId) {
+                resetChat();
+            } else {
+                renderSidebarHistory();
             }
         }
 
@@ -1770,6 +2017,10 @@
         }
 
         function resetChat() {
+            currentSessionId = null;
+            currentSessionMessages = [];
+            renderSidebarHistory();
+
             const inner = document.getElementById('messages-inner-wrap');
             if (!inner) return;
             const now = new Date();
@@ -1829,7 +2080,7 @@
             if (!query) return false;
 
             input.value = '';
-            addChatToHistory(query);
+            startOrUpdateSession(query);
             appendUserMessage(query);
 
             const sendBtn = document.getElementById('send-button');
@@ -1861,14 +2112,19 @@
 
                 if (response.ok && data) {
                     appendBotMessage(data.answer, data.retrieved_chunks || [], query);
+                    saveBotReplyToSession(data.answer, data.retrieved_chunks || []);
                 } else {
-                    appendBotMessage(data && data.answer ? data.answer : 'The assistant is temporarily reconnecting. Please try asking again in a moment.', [], query);
+                    const fallback = data && data.answer ? data.answer : 'The assistant is temporarily reconnecting. Please try asking again in a moment.';
+                    appendBotMessage(fallback, [], query);
+                    saveBotReplyToSession(fallback, []);
                 }
             } catch (err) {
                 if (loadingBubble && loadingBubble.parentNode) {
                     loadingBubble.parentNode.removeChild(loadingBubble);
                 }
-                appendBotMessage('Connection Notice: The assistant is temporarily reconnecting. Please try asking again in a moment.', [], query);
+                const connNotice = 'Connection Notice: The assistant is temporarily reconnecting. Please try asking again in a moment.';
+                appendBotMessage(connNotice, [], query);
+                saveBotReplyToSession(connNotice, []);
             } finally {
                 if (sendBtn) sendBtn.disabled = false;
                 input.focus();
@@ -2151,6 +2407,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', function() {
+            renderSidebarHistory();
             const form = document.getElementById('chat-form');
             if (form) {
                 form.addEventListener('submit', handleSend);
