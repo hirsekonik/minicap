@@ -38,6 +38,66 @@
     let isOpen = false;
     let isIframeLoaded = false;
 
+    /**
+     * Scans the live host system DOM (student profile, clearance progress,
+     * signatory statuses, notices, and visible dashboard cards) so the AI assistant
+     * can answer questions about what is currently on the user's real system screen.
+     */
+    function scanHostPageContext() {
+        try {
+            const clone = document.body.cloneNode(true);
+            const ignoreSelectors = [
+                '#tpc-widget-container',
+                '#tpc-widget-launcher',
+                '#tpc-widget-teaser',
+                '#tpc-widget-styles',
+                '.integration-bar',
+                '.mobile-preview-container',
+                '.embed-modal-backdrop',
+                'script',
+                'style',
+                'noscript',
+                'svg'
+            ];
+            ignoreSelectors.forEach(function(sel) {
+                const els = clone.querySelectorAll(sel);
+                for (let i = 0; i < els.length; i++) {
+                    if (els[i].parentNode) els[i].parentNode.removeChild(els[i]);
+                }
+            });
+
+            const rawText = (clone.innerText || clone.textContent || '')
+                .replace(/[ \t]+/g, ' ')
+                .replace(/\n\s*\n+/g, '\n')
+                .trim();
+
+            const summary = [
+                'Host System URL: ' + window.location.href,
+                'Page Title: ' + (document.title || 'TPC Student Clearance Portal'),
+                'Visible Screen Content:\n' + rawText.substring(0, 3000)
+            ].join('\n');
+
+            try {
+                localStorage.setItem('tpc_live_portal_context_v1', summary);
+            } catch (storageErr) {}
+
+            return summary;
+        } catch (err) {
+            return '';
+        }
+    }
+
+    function sendContextToIframe() {
+        if (!iframe || !iframe.contentWindow) return;
+        const ctx = scanHostPageContext();
+        if (ctx) {
+            iframe.contentWindow.postMessage({
+                type: 'tpc_host_context',
+                page_context: ctx
+            }, '*');
+        }
+    }
+
     // Create style element
     const style = document.createElement('style');
     style.id = 'tpc-widget-styles';
@@ -288,6 +348,9 @@
         iframe.src = widgetUrl;
         iframe.title = 'TPC Student Clearance Assistant';
         iframe.setAttribute('allow', 'clipboard-write');
+        iframe.addEventListener('load', function() {
+            sendContextToIframe();
+        });
         container.appendChild(iframe);
         isIframeLoaded = true;
     }
@@ -295,6 +358,7 @@
     function openWidget() {
         if (isOpen) return;
         initIframe();
+        sendContextToIframe();
         isOpen = true;
         launcher.classList.add('open');
         container.classList.add('active');
@@ -340,13 +404,15 @@
         }
     });
 
-    // Listen for postMessage from inside iframe (e.g. close or minimize button clicks)
+    // Listen for postMessage from inside iframe (e.g. close, minimize, or request host context)
     window.addEventListener('message', function(event) {
         if (!event.data) return;
         if (event.data.type === 'tpc_close_widget' || event.data.type === 'tpc_minimize_widget') {
             closeWidget();
         } else if (event.data.type === 'tpc_open_widget') {
             openWidget();
+        } else if (event.data.type === 'tpc_request_host_context') {
+            sendContextToIframe();
         }
     });
 
@@ -359,6 +425,9 @@
         document.body.appendChild(container);
         document.body.appendChild(launcher);
         document.body.appendChild(teaser);
+
+        // Initial scan of host page context
+        scanHostPageContext();
 
         // Preload iframe after 1.5s idle so it opens with zero lag
         setTimeout(function() {
@@ -379,6 +448,7 @@
         open: openWidget,
         close: closeWidget,
         toggle: toggleWidget,
+        rescan: sendContextToIframe,
         isOpen: function() { return isOpen; }
     };
 })();

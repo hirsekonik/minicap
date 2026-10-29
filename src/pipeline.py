@@ -3,7 +3,7 @@ Data Ingestion, Text Preprocessing, and Embedding Pipeline
 TPC Automated Clearance Assistant (MiniCAP)
 
 Features:
-1. Document Ingestion (PDF & DOCX extraction).
+1. Document Ingestion (PDF, Markdown & DOCX extraction).
 2. Multi-Stage Text Cleaning & Normalization:
    - Header/footer removal (handbook and clearance system titles)
    - Decoupling glued page numbers (e.g., '30Section 5' -> 'Section 5')
@@ -110,6 +110,16 @@ def read_docx(file_path: str) -> str:
     return text
 
 
+def read_markdown(file_path: str) -> str:
+    """Extracts raw text from a Markdown or UTF-8 text file."""
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='replace') as file:
+            return file.read()
+    except Exception as e:
+        print(f"[Error] Failed to read Markdown {file_path}: {e}")
+        return ""
+
+
 class TextCleaner:
     """Modular text cleaning rules for institutional handbook and manual documents."""
 
@@ -178,18 +188,52 @@ def chunk_text(text: str, model_name: str = "cl100k_base", chunk_size: int = 500
     return chunks
 
 
+def load_all_knowledge_chunks(data_dir: str = None, chunk_size: int = 500, overlap: int = 50) -> List[str]:
+    """
+    Loads, cleans, and chunks both the real Student Clearance System Codebase & User Manual
+    (`TPC_System_Codebase_Flow.md`) and the official TPC Student Handbook / Capstone Dataset PDF
+    (`Master_Capstone_Dataset.pdf`).
+    """
+    if not data_dir:
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        data_dir = os.path.join(base_dir, 'data')
+
+    all_chunks: List[str] = []
+
+    # 1. Real System Codebase Architecture, Routes, Controllers, User Manual & DB Schema
+    md_path = os.path.join(data_dir, 'TPC_System_Codebase_Flow.md')
+    if os.path.exists(md_path):
+        md_raw = read_markdown(md_path)
+        md_clean = clean_text(md_raw)
+        if md_clean:
+            all_chunks.extend(chunk_text(md_clean, chunk_size=chunk_size, overlap=overlap))
+
+    # 2. Official TPC Student Handbook & Master Capstone Dataset PDF
+    pdf_path = os.path.join(data_dir, 'Master_Capstone_Dataset.pdf')
+    if os.path.exists(pdf_path):
+        pdf_raw = read_pdf(pdf_path)
+        pdf_clean = clean_text(pdf_raw)
+        if pdf_clean:
+            all_chunks.extend(chunk_text(pdf_clean, chunk_size=chunk_size, overlap=overlap))
+
+    return all_chunks
+
+
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     data_dir = os.path.join(base_dir, 'data')
     pdf_path = os.path.join(data_dir, 'Master_Capstone_Dataset.pdf')
+    md_path = os.path.join(data_dir, 'TPC_System_Codebase_Flow.md')
 
     print("=" * 60)
     print("TPC DATA PIPELINE & EMBEDDING GENERATION DEMO")
     print("=" * 60)
 
     # 1. Read Raw Documents
-    print("\n[Step 1] Ingesting Raw Documents...")
-    raw_text = read_pdf(pdf_path)
+    print("\n[Step 1] Ingesting Raw Documents (Codebase Flow + Handbook PDF)...")
+    raw_pdf = read_pdf(pdf_path)
+    raw_md = read_markdown(md_path) if os.path.exists(md_path) else ""
+    raw_text = (raw_md + "\n\n" + raw_pdf).strip()
     print(f"  - Total Raw Characters: {len(raw_text):,}")
     print(f"  - Total Raw Lines: {len(raw_text.splitlines()):,}")
 
@@ -207,7 +251,7 @@ def main():
 
     # 4. Chunk Text
     print("\n[Step 3] Token-Bounded Chunking (500 tokens, 50 overlap)...")
-    chunks = chunk_text(cleaned_text, chunk_size=500, overlap=50)
+    chunks = load_all_knowledge_chunks(data_dir=data_dir, chunk_size=500, overlap=50)
     print(f"  - Total Chunks Created: {len(chunks)}")
     if chunks:
         print(f"  - Chunk 0 Character Length: {len(chunks[0])}")

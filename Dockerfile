@@ -29,8 +29,8 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 # Copy application code and dataset
 COPY . .
 
-# Pre-index knowledge base into persistent ChromaDB
-RUN python -c "from src.pipeline import read_pdf, clean_text, chunk_text; from src.rag import setup_chromadb; raw = read_pdf('data/Master_Capstone_Dataset.pdf'); chunks = chunk_text(clean_text(raw)); setup_chromadb(chunks)"
+# Pre-index knowledge base (Real System Codebase Flow + Handbook PDF) into persistent ChromaDB
+RUN python -c "from src.pipeline import load_all_knowledge_chunks; from src.rag import setup_chromadb; setup_chromadb(load_all_knowledge_chunks())"
 
 EXPOSE 8080
 EXPOSE 8000

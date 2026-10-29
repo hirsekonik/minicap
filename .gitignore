@@ -2,3 +2,5 @@
 __pycache__/
 tpc_chroma_db/
 .venv/
+/*.pdf
+/*.docx

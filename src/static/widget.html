@@ -1005,11 +1005,15 @@
             box-shadow: 0 12px 35px -4px rgba(37, 99, 235, 0.16);
         }
 
+        .is-standalone-view .input-icon {
+            left: 6px;
+        }
+
         .is-standalone-view .chat-input {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0.65rem 0.5rem !important;
+            padding: 0.65rem 0.75rem 0.65rem 2.15rem !important;
             font-size: 15px !important;
         }
 
@@ -1649,7 +1653,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                     </svg>
-                    <span>Grounded on TPC Student Handbook &amp; Clearance Dataset</span>
+                    <span>Grounded on TPC Handbook Dataset • Gemini Free-Tier API (15 RPM Quota / Auto-Fallback)</span>
                 </div>
             </div>
         </footer>
@@ -1984,6 +1988,38 @@
             }
         });
 
+        // --- LIVE HOST PAGE CONTEXT SCANNER RECEIVER ---
+        const PORTAL_CTX_STORAGE_KEY = 'tpc_live_portal_context_v1';
+        let currentHostPageContext = '';
+
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'tpc_host_context' && event.data.page_context) {
+                currentHostPageContext = String(event.data.page_context);
+                try {
+                    localStorage.setItem(PORTAL_CTX_STORAGE_KEY, currentHostPageContext);
+                } catch (e) {}
+            }
+        });
+
+        if (window.parent && window.parent !== window) {
+            try {
+                window.parent.postMessage({ type: 'tpc_request_host_context' }, '*');
+            } catch (e) {}
+        }
+
+        function getActivePageContext() {
+            if (currentHostPageContext) return currentHostPageContext;
+            try {
+                const stored = localStorage.getItem(PORTAL_CTX_STORAGE_KEY);
+                if (stored) return stored;
+            } catch (e) {}
+            return (
+                "Active Student Portal Profile: Kean Lester Auguis | Student ID: 202313282 | Course: BSIS (4th Year)\n" +
+                "Clearance Progress: 0% Completed (Not Started) | Total Approved: 0 / 14 Departments | Pending: 0 | Approved: 0 | Not Approved: 14\n" +
+                "System Notice: Period Inactive — Clearance Submissions are Paused (The Office of Student Affairs and Services / OSAS has not opened the clearance period yet)."
+            );
+        }
+
         function closeWidget() {
             if (window.parent && window.parent !== window) {
                 window.parent.postMessage({ type: 'tpc_close_widget' }, '*');
@@ -2092,7 +2128,11 @@
                 const response = await fetch('/api/query', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query })
+                    body: JSON.stringify({
+                        query: query,
+                        history: currentSessionMessages.slice(0, -1),
+                        page_context: getActivePageContext()
+                    })
                 });
 
                 const rawText = await response.text();
@@ -2268,48 +2308,49 @@
 
         // Context-aware smart follow-ups
         function generateSmartFollowups(query, answer) {
-            const combined = ((query || '') + ' ' + (answer || '')).toLowerCase();
+            const qLower = (query || '').toLowerCase();
+            const aLower = (answer || '').toLowerCase();
 
-            if (combined.includes('step') || combined.includes('submit') || combined.includes('initiat')) {
+            if (/\b(step|submit|initiat|how do i start)\b/.test(qLower)) {
                 return [
                     "What if an office rejects my request?",
                     "How do I download my certificate?",
-                    "Show the 14 signatory offices"
+                    "What are the 14 signatory offices?"
                 ];
             }
-            if (combined.includes('reject') || combined.includes('disapprov') || combined.includes('fail')) {
+            if (/\b(reject|disapprov|fail|hold|deficien)\b/.test(qLower)) {
                 return [
                     "How does re-evaluation work?",
-                    "Where do I submit required appeal documents?",
-                    "Can I talk to the Department Dean?"
+                    "What are the 14 signatory offices?",
+                    "Can I clear if I have an unpaid tuition balance?"
                 ];
             }
-            if (combined.includes('balance') || combined.includes('tuition') || combined.includes('cashier') || combined.includes('fee')) {
+            if (/\b(balance|tuition|cashier|fees|unpaid)\b/.test(qLower)) {
                 return [
                     "Where is the Cashier's Office located?",
                     "Can I clear with a promissory note?",
                     "When do financial holds clear in the system?"
                 ];
             }
-            if (combined.includes('tor') || combined.includes('transcript') || combined.includes('graduat')) {
+            if (/\b(tor|transcript|graduat|diploma)\b/.test(qLower)) {
                 return [
                     "What are the prerequisites for TOR clearance?",
                     "How long does the Registrar take to release TOR?",
                     "What is Honorable Dismissal?"
                 ];
             }
-            if (combined.includes('signatory') || combined.includes('department') || combined.includes('office')) {
+            if (/\b(signatory|signatories|department|office|14)\b/.test(qLower)) {
                 return [
-                    "Which office should I clear first?",
-                    "What are the requirements for the College Library?",
-                    "How to contact OSAS for moral certificate?"
+                    "What are the steps to submit clearance?",
+                    "What happens if an office rejects my request?",
+                    "What are the prerequisites to request my TOR?"
                 ];
             }
 
             return [
                 "What are the steps to submit clearance?",
-                "What are the 14 signatory offices?",
-                "Can I clear if I have an unpaid tuition balance?"
+                "What are the 14 required signatory offices?",
+                "What happens if an office rejects my request?"
             ];
         }
 

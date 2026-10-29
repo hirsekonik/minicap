@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,10 +19,10 @@ else:
 # Safe imports for internal modules
 try:
     from src.rag import setup_chromadb, query_rag_engine, PROMPTS, get_gemini_api_key
-    from src.pipeline import read_pdf, clean_text, chunk_text
+    from src.pipeline import read_pdf, clean_text, chunk_text, load_all_knowledge_chunks
 except ImportError:
     from rag import setup_chromadb, query_rag_engine, PROMPTS, get_gemini_api_key
-    from pipeline import read_pdf, clean_text, chunk_text
+    from pipeline import read_pdf, clean_text, chunk_text, load_all_knowledge_chunks
 
 app = FastAPI(
     title="TPC Automated Clearance Assistant (MiniCAP)",
@@ -45,16 +45,7 @@ collection = None
 def get_or_init_collection():
     global collection
     if collection is None:
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        pdf_path = os.path.join(base_dir, 'data', 'Master_Capstone_Dataset.pdf')
-        
-        # Check if DB already populated
         c, _ = setup_chromadb()
-        if c.count() == 0 and os.path.exists(pdf_path):
-            raw_text = read_pdf(pdf_path)
-            cleaned_text = clean_text(raw_text)
-            chunks = chunk_text(cleaned_text, chunk_size=500, overlap=50)
-            c, _ = setup_chromadb(chunks)
         collection = c
     return collection
 
@@ -66,6 +57,8 @@ class QueryRequest(BaseModel):
     query: str
     prompt_id: int = 1
     custom_prompt: Optional[str] = None
+    history: Optional[List[Dict[str, Any]]] = None
+    page_context: Optional[str] = None
 
 class QueryResponse(BaseModel):
     query: str
@@ -142,7 +135,9 @@ def query_rag(request: QueryRequest):
         collection=col,
         query=request.query,
         system_prompt=system_prompt,
-        api_key=get_gemini_api_key()
+        api_key=get_gemini_api_key(),
+        history=request.history,
+        page_context=request.page_context
     )
     
     return QueryResponse(
